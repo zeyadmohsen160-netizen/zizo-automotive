@@ -5,7 +5,12 @@ const path = require("path");
 const fs = require("fs");
 
 const app = express();
-const PORT = 3000;
+
+/* =========================================================
+   SERVER PORT
+========================================================= */
+
+const PORT = process.env.PORT || 3000;
 
 /* =========================================================
    PATHS
@@ -45,10 +50,10 @@ app.use(
     })
 );
 
-/*
- * Serve the whole website
- * including HTML / CSS / JS / images
- */
+/* =========================================================
+   STATIC WEBSITE
+========================================================= */
+
 app.use(
     express.static(websiteFolder)
 );
@@ -256,18 +261,8 @@ const upload = multer({
 
     limits: {
 
-        /*
-         * Maximum image size:
-         * 10 MB
-         */
-
         fileSize:
             10 * 1024 * 1024,
-
-        /*
-         * Maximum images
-         * per car = 20
-         */
 
         files: 20
 
@@ -419,10 +414,6 @@ app.get(
                 const carsWithImages = [];
 
 
-                /* =================================================
-                   LOAD ALL IMAGES FOR EACH CAR
-                ================================================= */
-
                 cars.forEach(
                     (car) => {
 
@@ -464,29 +455,16 @@ app.get(
 
                                 }
 
-
-                                /*
-                                 * Return all images
-                                 * as simple paths
-                                 */
-
                                 car.images =
                                     (images || []).map(
                                         image =>
                                             image.image_path
                                     );
 
-
-                                /*
-                                 * First image is
-                                 * the main image
-                                 */
-
                                 car.main_image =
                                     car.images.length > 0
                                         ? car.images[0]
                                         : null;
-
 
                                 carsWithImages.push(
                                     car
@@ -494,11 +472,6 @@ app.get(
 
                                 completed++;
 
-
-                                /*
-                                 * When all cars
-                                 * are completed
-                                 */
 
                                 if (
                                     completed ===
@@ -509,7 +482,6 @@ app.get(
                                         (a, b) =>
                                             b.id - a.id
                                     );
-
 
                                     return res.json({
 
@@ -638,10 +610,6 @@ app.get(
                 }
 
 
-                /*
-                 * Load ALL images
-                 */
-
                 db.all(
                     `
                     SELECT
@@ -754,10 +722,6 @@ app.post(
         } = req.body;
 
 
-        /* =====================================================
-           REQUIRED FIELDS
-        ===================================================== */
-
         if (
             !brand ||
             !model ||
@@ -782,10 +746,6 @@ app.post(
 
         }
 
-
-        /* =====================================================
-           VALIDATE YEAR
-        ===================================================== */
 
         const carYear =
             Number(year);
@@ -814,10 +774,6 @@ app.post(
         }
 
 
-        /* =====================================================
-           FILES
-        ===================================================== */
-
         const files =
             req.files || [];
 
@@ -837,10 +793,6 @@ app.post(
 
         }
 
-
-        /* =====================================================
-           INSERT CAR
-        ===================================================== */
 
         const sql = `
             INSERT INTO cars (
@@ -876,29 +828,17 @@ app.post(
             VALUES (
 
                 ?,
-
                 ?,
-
                 ?,
-
                 ?,
-
                 ?,
-
                 ?,
-
                 ?,
-
                 ?,
-
                 ?,
-
                 ?,
-
                 ?,
-
                 ?,
-
                 ?
 
             )
@@ -978,10 +918,6 @@ app.post(
                     this.lastID;
 
 
-                /*
-                 * Save ALL uploaded images
-                 */
-
                 insertImages(
                     carId,
                     files,
@@ -996,7 +932,7 @@ app.post(
 );
 
 /* =========================================================
-   INSERT ALL IMAGES
+   INSERT IMAGES
 ========================================================= */
 
 function insertImages(
@@ -1005,10 +941,6 @@ function insertImages(
     index,
     res
 ) {
-
-    /*
-     * Finished
-     */
 
     if (
         index >=
@@ -1070,12 +1002,6 @@ function insertImages(
                 );
 
 
-                /*
-                 * Delete car.
-                 * Because foreign keys are ON,
-                 * related image rows are removed.
-                 */
-
                 db.run(
                     `
                     DELETE FROM cars
@@ -1112,10 +1038,6 @@ function insertImages(
 
             }
 
-
-            /*
-             * Save next image
-             */
 
             insertImages(
                 carId,
@@ -1517,11 +1439,6 @@ app.get(
                                 }
 
 
-                                /*
-                                 * Admin receives
-                                 * every image
-                                 */
-
                                 car.images =
                                     (
                                         images ||
@@ -1538,10 +1455,6 @@ app.get(
                                         })
                                     );
 
-
-                                /*
-                                 * Main image
-                                 */
 
                                 car.main_image =
                                     car.images.length > 0
@@ -1707,11 +1620,6 @@ app.delete(
         }
 
 
-        /*
-         * Get all image paths
-         * BEFORE deleting the car
-         */
-
         db.all(
             `
             SELECT image_path
@@ -1744,10 +1652,6 @@ app.delete(
 
                 }
 
-
-                /*
-                 * Check car exists
-                 */
 
                 db.get(
                     `
@@ -1791,10 +1695,6 @@ app.delete(
                         }
 
 
-                        /*
-                         * Delete car
-                         */
-
                         db.run(
                             `
                             DELETE FROM cars
@@ -1826,11 +1726,6 @@ app.delete(
 
                                 }
 
-
-                                /*
-                                 * Delete ALL
-                                 * image files
-                                 */
 
                                 (
                                     images ||
@@ -2003,7 +1898,7 @@ app.delete(
 );
 
 /* =========================================================
-   404 API HANDLER
+   API 404
 ========================================================= */
 
 app.use(
@@ -2040,10 +1935,6 @@ app.use(
         );
 
 
-        /* =====================================================
-           MULTER ERROR
-        ===================================================== */
-
         if (
             error instanceof
             multer.MulterError
@@ -2061,10 +1952,6 @@ app.use(
 
         }
 
-
-        /* =====================================================
-           NORMAL ERROR
-        ===================================================== */
 
         if (error) {
 
@@ -2091,6 +1978,7 @@ app.use(
 
 app.listen(
     PORT,
+    "0.0.0.0",
     () => {
 
         console.log("");
