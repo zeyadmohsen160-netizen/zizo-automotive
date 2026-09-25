@@ -1,0 +1,918 @@
+```html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Zizo Automotive - دخول العميل</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #080808;
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        .page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 25px;
+        }
+
+        .box {
+            width: 100%;
+            max-width: 900px;
+            background: #111;
+            border: 1px solid #292929;
+            border-radius: 18px;
+            padding: 45px;
+            box-shadow: 0 20px 70px rgba(0,0,0,.45);
+        }
+
+        .logo {
+            text-align: center;
+            font-size: 30px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .logo span {
+            color: #d4af37;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #999;
+            margin-bottom: 40px;
+            font-size: 16px;
+        }
+
+        .question {
+            text-align: center;
+            font-size: 30px;
+            margin-bottom: 12px;
+        }
+
+        .question-text {
+            text-align: center;
+            color: #888;
+            margin-bottom: 35px;
+        }
+
+        .choices {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 22px;
+        }
+
+        .choice {
+            background: #171717;
+            border: 1px solid #303030;
+            border-radius: 14px;
+            padding: 35px 25px;
+            cursor: pointer;
+            transition: .25s;
+            text-align: center;
+        }
+
+        .choice:hover {
+            border-color: #d4af37;
+            transform: translateY(-4px);
+            background: #1b1b1b;
+        }
+
+        .choice-icon {
+            font-size: 50px;
+            margin-bottom: 18px;
+        }
+
+        .choice h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .choice p {
+            color: #888;
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+        .choice .arrow {
+            display: inline-block;
+            margin-top: 20px;
+            color: #d4af37;
+            font-weight: bold;
+        }
+
+        .login-area {
+            display: none;
+        }
+
+        .back-btn {
+            background: transparent;
+            border: none;
+            color: #aaa;
+            cursor: pointer;
+            margin-bottom: 25px;
+            font-size: 15px;
+        }
+
+        .back-btn:hover {
+            color: #d4af37;
+        }
+
+        .login-title {
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .login-description {
+            text-align: center;
+            color: #888;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ccc;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            background: #0b0b0b;
+            color: white;
+            border: 1px solid #333;
+            border-radius: 7px;
+            outline: none;
+            font-size: 15px;
+        }
+
+        input:focus {
+            border-color: #d4af37;
+        }
+
+        .main-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 7px;
+            background: #d4af37;
+            color: #000;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        .main-btn:hover {
+            opacity: .9;
+        }
+
+        .register-text {
+            text-align: center;
+            margin-top: 22px;
+            color: #888;
+        }
+
+        .register-text button {
+            background: none;
+            border: none;
+            color: #d4af37;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        .error {
+            display: none;
+            background: rgba(180, 30, 30, .15);
+            border: 1px solid #7d2222;
+            color: #ff7777;
+            padding: 12px;
+            border-radius: 7px;
+            margin-bottom: 18px;
+            text-align: center;
+        }
+
+        .mode-badge {
+            width: fit-content;
+            margin: 0 auto 25px;
+            padding: 8px 15px;
+            border: 1px solid #d4af37;
+            color: #d4af37;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+
+        @media (max-width: 650px) {
+
+            .box {
+                padding: 28px 20px;
+            }
+
+            .choices {
+                grid-template-columns: 1fr;
+            }
+
+            .question {
+                font-size: 24px;
+            }
+
+            .logo {
+                font-size: 25px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="page">
+
+    <div class="box">
+
+        <!-- =========================
+             CHOICE SCREEN
+        ========================== -->
+
+        <div id="choiceScreen">
+
+            <div class="logo">
+                ZIZO <span>AUTOMOTIVE</span>
+            </div>
+
+            <div class="subtitle">
+                Your trusted automotive marketplace
+            </div>
+
+            <h1 class="question">
+                أهلاً بيك في Zizo Automotive
+            </h1>
+
+            <p class="question-text">
+                تحب تعمل إيه؟
+            </p>
+
+            <div class="choices">
+
+                <!-- BUY -->
+
+                <div
+                    class="choice"
+                    onclick="selectMode('buy')"
+                >
+
+                    <div class="choice-icon">
+                        🚗
+                    </div>
+
+                    <h2>
+                        عايز أشتري عربية
+                    </h2>
+
+                    <p>
+                        تصفح السيارات المعروضة،
+                        ابحث عن العربية المناسبة،
+                        وشوف كل التفاصيل والصور.
+                    </p>
+
+                    <span class="arrow">
+                        ابدأ البحث ←
+                    </span>
+
+                </div>
+
+
+                <!-- SELL -->
+
+                <div
+                    class="choice"
+                    onclick="selectMode('sell')"
+                >
+
+                    <div class="choice-icon">
+                        💰
+                    </div>
+
+                    <h2>
+                        عايز أبيع عربيتي
+                    </h2>
+
+                    <p>
+                        اعرض عربيتك على Zizo Automotive
+                        ووصلها بمشتري جاد.
+                    </p>
+
+                    <span class="arrow">
+                        اعرض عربيتك ←
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             LOGIN SCREEN
+        ========================== -->
+
+        <div
+            id="loginArea"
+            class="login-area"
+        >
+
+            <button
+                class="back-btn"
+                onclick="backToChoice()"
+            >
+                ← رجوع
+            </button>
+
+            <div
+                id="modeBadge"
+                class="mode-badge"
+            ></div>
+
+            <h1
+                id="loginTitle"
+                class="login-title"
+            >
+                تسجيل الدخول
+            </h1>
+
+            <p
+                id="loginDescription"
+                class="login-description"
+            >
+                سجل دخولك علشان تكمل
+            </p>
+
+            <div
+                id="errorMessage"
+                class="error"
+            ></div>
+
+
+            <!-- LOGIN -->
+
+            <div id="loginForm">
+
+                <div class="input-group">
+
+                    <label>
+                        رقم الهاتف
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="loginPhone"
+                        placeholder="01xxxxxxxxx"
+                    >
+
+                </div>
+
+
+                <div class="input-group">
+
+                    <label>
+                        كلمة المرور
+                    </label>
+
+                    <input
+                        type="password"
+                        id="loginPassword"
+                        placeholder="كلمة المرور"
+                    >
+
+                </div>
+
+
+                <button
+                    class="main-btn"
+                    onclick="loginCustomer()"
+                >
+                    تسجيل الدخول
+                </button>
+
+                <div class="register-text">
+
+                    معندكش حساب؟
+
+                    <button
+                        onclick="showRegister()"
+                    >
+                        إنشاء حساب
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- REGISTER -->
+
+            <div
+                id="registerForm"
+                style="display:none;"
+            >
+
+                <div class="input-group">
+
+                    <label>
+                        الاسم بالكامل
+                    </label>
+
+                    <input
+                        type="text"
+                        id="registerName"
+                        placeholder="اكتب اسمك"
+                    >
+
+                </div>
+
+
+                <div class="input-group">
+
+                    <label>
+                        رقم الهاتف
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="registerPhone"
+                        placeholder="01xxxxxxxxx"
+                    >
+
+                </div>
+
+
+                <div class="input-group">
+
+                    <label>
+                        كلمة المرور
+                    </label>
+
+                    <input
+                        type="password"
+                        id="registerPassword"
+                        placeholder="اختار كلمة مرور"
+                    >
+
+                </div>
+
+
+                <button
+                    class="main-btn"
+                    onclick="registerCustomer()"
+                >
+                    إنشاء الحساب
+                </button>
+
+                <div class="register-text">
+
+                    عندك حساب بالفعل؟
+
+                    <button
+                        onclick="showLogin()"
+                    >
+                        تسجيل الدخول
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    let selectedMode = "";
+
+    /* =========================
+       SELECT BUY / SELL
+    ========================== */
+
+    function selectMode(mode) {
+
+        selectedMode = mode;
+
+        document
+            .getElementById("choiceScreen")
+            .style.display = "none";
+
+        document
+            .getElementById("loginArea")
+            .style.display = "block";
+
+        const badge =
+            document.getElementById("modeBadge");
+
+        const title =
+            document.getElementById("loginTitle");
+
+        const description =
+            document.getElementById(
+                "loginDescription"
+            );
+
+        if (mode === "buy") {
+
+            badge.textContent =
+                "🚗 شراء سيارة";
+
+            title.textContent =
+                "تسجيل الدخول كمشتري";
+
+            description.textContent =
+                "سجل دخولك علشان تقدر تتصفح السيارات وتطلب معاينة.";
+
+        } else {
+
+            badge.textContent =
+                "💰 بيع سيارة";
+
+            title.textContent =
+                "تسجيل الدخول كبائع";
+
+            description.textContent =
+                "سجل دخولك علشان تقدر تعرض عربيتك للبيع.";
+
+        }
+
+        showLogin();
+
+    }
+
+
+    /* =========================
+       BACK
+    ========================== */
+
+    function backToChoice() {
+
+        selectedMode = "";
+
+        document
+            .getElementById("loginArea")
+            .style.display = "none";
+
+        document
+            .getElementById("choiceScreen")
+            .style.display = "block";
+
+        hideError();
+
+    }
+
+
+    /* =========================
+       SHOW LOGIN
+    ========================== */
+
+    function showLogin() {
+
+        document
+            .getElementById("loginForm")
+            .style.display = "block";
+
+        document
+            .getElementById("registerForm")
+            .style.display = "none";
+
+        hideError();
+
+    }
+
+
+    /* =========================
+       SHOW REGISTER
+    ========================== */
+
+    function showRegister() {
+
+        document
+            .getElementById("loginForm")
+            .style.display = "none";
+
+        document
+            .getElementById("registerForm")
+            .style.display = "block";
+
+        hideError();
+
+    }
+
+
+    /* =========================
+       LOGIN
+    ========================== */
+
+    async function loginCustomer() {
+
+        const phone =
+            document
+                .getElementById("loginPhone")
+                .value
+                .trim();
+
+        const password =
+            document
+                .getElementById("loginPassword")
+                .value;
+
+        if (!phone || !password) {
+
+            showError(
+                "من فضلك اكتب رقم الهاتف وكلمة المرور."
+            );
+
+            return;
+
+        }
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/customer/login",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+
+                            phone:
+                                phone,
+
+                            password:
+                                password
+
+                        })
+
+                    }
+                );
+
+            const data =
+                await response.json();
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.message ||
+                    "بيانات الدخول غير صحيحة."
+                );
+
+            }
+
+            /*
+             * حفظ بيانات العميل
+             */
+
+            localStorage.setItem(
+                "zizoCustomer",
+                JSON.stringify(
+                    data.customer
+                )
+            );
+
+            localStorage.setItem(
+                "zizoCustomerMode",
+                selectedMode
+            );
+
+            /*
+             * بعد تسجيل الدخول
+             */
+
+            if (selectedMode === "buy") {
+
+                window.location.href =
+                    "cars.html";
+
+            } else {
+
+                window.location.href =
+                    "sell-car.html";
+
+            }
+
+        }
+        catch (error) {
+
+            showError(
+                error.message
+            );
+
+        }
+
+    }
+
+
+    /* =========================
+       REGISTER
+    ========================== */
+
+    async function registerCustomer() {
+
+        const name =
+            document
+                .getElementById("registerName")
+                .value
+                .trim();
+
+        const phone =
+            document
+                .getElementById("registerPhone")
+                .value
+                .trim();
+
+        const password =
+            document
+                .getElementById("registerPassword")
+                .value;
+
+        if (
+            !name ||
+            !phone ||
+            !password
+        ) {
+
+            showError(
+                "من فضلك أكمل كل البيانات."
+            );
+
+            return;
+
+        }
+
+        if (password.length < 6) {
+
+            showError(
+                "كلمة المرور يجب أن تكون 6 أحرف على الأقل."
+            );
+
+            return;
+
+        }
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/customer/register",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+
+                            name:
+                                name,
+
+                            phone:
+                                phone,
+
+                            password:
+                                password
+
+                        })
+
+                    }
+                );
+
+            const data =
+                await response.json();
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.message ||
+                    "تعذر إنشاء الحساب."
+                );
+
+            }
+
+            /*
+             * تسجيل الدخول تلقائياً
+             */
+
+            localStorage.setItem(
+                "zizoCustomer",
+                JSON.stringify(
+                    data.customer
+                )
+            );
+
+            localStorage.setItem(
+                "zizoCustomerMode",
+                selectedMode
+            );
+
+            if (selectedMode === "buy") {
+
+                window.location.href =
+                    "cars.html";
+
+            } else {
+
+                window.location.href =
+                    "sell-car.html";
+
+            }
+
+        }
+        catch (error) {
+
+            showError(
+                error.message
+            );
+
+        }
+
+    }
+
+
+    /* =========================
+       ERROR
+    ========================== */
+
+    function showError(message) {
+
+        const box =
+            document.getElementById(
+                "errorMessage"
+            );
+
+        box.textContent =
+            message;
+
+        box.style.display =
+            "block";
+
+    }
+
+
+    function hideError() {
+
+        const box =
+            document.getElementById(
+                "errorMessage"
+            );
+
+        box.style.display =
+            "none";
+
+        box.textContent =
+            "";
+
+    }
+
+</script>
+
+</body>
+
+</html>
+```

@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Zizo Automotive | Contact</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<header class="navbar">
+
+    <div class="container nav-container">
+
+        <a href="index.html" class="logo">
+            <span>ZIZO</span>
+            <small>AUTOMOTIVE</small>
+        </a>
+
+        <nav class="nav-links">
+            <a href="index.html" data-en="Home" data-ar="الرئيسية">Home</a>
+            <a href="cars.html" data-en="Cars" data-ar="السيارات">Cars</a>
+            <a href="sell-car.html" data-en="Sell Your Car" data-ar="بيع سيارتك">
+                Sell Your Car
+            </a>
+            <a href="contact.html" class="active" data-en="Contact" data-ar="تواصل معنا">
+                Contact
+            </a>
+        </nav>
+
+        <div class="nav-actions">
+
+            <button class="language-btn" onclick="toggleLanguage()">
+                AR
+            </button>
+
+            <a href="cars.html" class="nav-button" data-en="Browse Cars" data-ar="تصفح السيارات">
+                Browse Cars
+            </a>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<main>
+
+    <!-- CONTACT HERO -->
+
+    <section class="page-hero">
+
+        <div class="container">
+
+            <span class="section-label"
+                  data-en="CONTACT ZIZO AUTOMOTIVE"
+                  data-ar="تواصل مع ZIZO AUTOMOTIVE">
+                CONTACT ZIZO AUTOMOTIVE
+            </span>
+
+            <h1
+                data-en="Let's talk about your next car."
+                data-ar="خلينا نتكلم عن عربيتك الجاية.">
+                Let's talk about your next car.
+            </h1>
+
+            <p
+                data-en="Interested in a car? Want to sell your car? Contact Zizo Automotive and we will handle the next step."
+                data-ar="مهتم بعربية؟ عايز تبيع عربيتك؟ تواصل مع Zizo Automotive وإحنا هنتولى الخطوة الجاية.">
+                Interested in a car? Want to sell your car?
+                Contact Zizo Automotive and we will handle the next step.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- CONTACT CONTENT -->
+
+    <section class="contact-section">
+
+        <div class="container contact-grid">
+
+
+            <!-- CONTACT INFORMATION -->
+
+            <div class="contact-info">
+
+                <span class="section-label"
+                      data-en="GET IN TOUCH"
+                      data-ar="تواصل معنا">
+                    GET IN TOUCH
+                </span>
+
+                <h2
+                    data-en="Your car. Our inspection. Your decision."
+                    data-ar="عربيتك. فحصنا. وقرارك.">
+                    Your car. Our inspection. Your decision.
+                </h2>
+
+                <p
+                    data-en="Zizo Automotive works as a vehicle broker. We connect serious buyers with sellers, inspect the vehicle and help both sides move forward."
+                    data-ar="Zizo Automotive بيشتغل كوسيط سيارات. بنوصل المشتري الجاد بصاحب العربية، وننزل نفحص العربية ونساعد الطرفين يكملوا الصفقة.">
+                    Zizo Automotive works as a vehicle broker.
+                    We connect serious buyers with sellers, inspect the vehicle
+                    and help both sides move forward.
+                </p>
+
+
+                <div class="contact-details">
+
+                    <div class="contact-item">
+
+                        <div class="contact-icon">
+                            ☎
+                        </div>
+
+                        <div>
+                            <span
+                                data-en="Phone"
+                                data-ar="التليفون">
+                                Phone
+                            </span>
+
+                            <strong>
+                                01000000000
+                            </strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="contact-item">
+
+                        <div class="contact-icon">
+                            💬
+                        </div>
+
+                        <div>
+                            <span>
+                                WhatsApp
+                            </span>
+
+                            <strong>
+                                01000000000
+                            </strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="contact-item">
+
+                        <div class="contact-icon">
+                            📍
+                        </div>
+
+                        <div>
+                            <span
+                                data-en="Location"
+                                data-ar="الموقع">
+                                Location
+                            </span>
+
+                            <strong
+                                data-en="Egypt"
+                                data-ar="مصر">
+                                Egypt
+                            </strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- CONTACT FORM -->
+
+            <div class="contact-form-box">
+
+                <span class="section-label"
+                      data-en="SEND A MESSAGE"
+                      data-ar="ابعت رسالة">
+                    SEND A MESSAGE
+                </span>
+
+                <h2
+                    data-en="Interested in a car?"
+                    data-ar="مهتم بعربية؟">
+                    Interested in a car?
+                </h2>
+
+                <form id="contactForm">
+
+                    <div class="form-group">
+
+                        <label
+                            data-en="Your Name"
+                            data-ar="اسمك">
+                            Your Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="name"
+                            placeholder="Your name"
+                            required>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label
+                            data-en="Phone Number"
+                            data-ar="رقم الهاتف">
+                            Phone Number
+                        </label>
+
+                        <input
+                            type="tel"
+                            id="phone"
+                            placeholder="Your phone number"
+                            required>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label
+                            data-en="Message"
+                            data-ar="الرسالة">
+                            Message
+                        </label>
+
+                        <textarea
+                            id="message"
+                            rows="5"
+                            placeholder="Tell us which car you are interested in..."
+                            required></textarea>
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="primary-button"
+                        data-en="Send via WhatsApp"
+                        data-ar="إرسال عبر واتساب">
+
+                        Send via WhatsApp
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<footer class="footer">
+
+    <div class="container footer-grid">
+
+        <div>
+
+            <a href="index.html" class="logo">
+                <span>ZIZO</span>
+                <small>AUTOMOTIVE</small>
+            </a>
+
+            <p
+                data-en="Car brokerage, inspection and vehicle sales."
+                data-ar="وساطة سيارات وفحص ومعاينة ومساعدة في البيع والشراء.">
+                Car brokerage, inspection and vehicle sales.
+            </p>
+
+        </div>
+
+
+        <div>
+
+            <h3
+                data-en="Quick Links"
+                data-ar="روابط سريعة">
+                Quick Links
+            </h3>
+
+            <a href="index.html"
+               data-en="Home"
+               data-ar="الرئيسية">
+                Home
+            </a>
+
+            <a href="cars.html"
+               data-en="Cars"
+               data-ar="السيارات">
+                Cars
+            </a>
+
+            <a href="sell-car.html"
+               data-en="Sell Your Car"
+               data-ar="بيع سيارتك">
+                Sell Your Car
+            </a>
+
+            <a href="contact.html"
+               data-en="Contact"
+               data-ar="تواصل معنا">
+                Contact
+            </a>
+
+        </div>
+
+
+        <div>
+
+            <h3
+                data-en="Contact"
+                data-ar="تواصل معنا">
+                Contact
+            </h3>
+
+            <p>Egypt</p>
+            <p>Zizo Automotive</p>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer-bottom">
+
+        © 2026 Zizo Automotive. All rights reserved.
+
+    </div>
+
+</footer>
+
+
+<script src="js/lang.js"></script>
+
+<script>
+
+document.getElementById("contactForm").addEventListener("submit", function(e) {
+
+    e.preventDefault();
+
+    const name = document.getElementById("name").value;
+    const phone = document.getElementById("phone").value;
+    const message = document.getElementById("message").value;
+
+    const whatsappNumber = "201000000000";
+
+    const text =
+        "Hello Zizo Automotive%0A%0A" +
+        "Name: " + encodeURIComponent(name) + "%0A" +
+        "Phone: " + encodeURIComponent(phone) + "%0A" +
+        "Message: " + encodeURIComponent(message);
+
+    window.open(
+        "https://wa.me/" + whatsappNumber + "?text=" + text,
+        "_blank"
+    );
+
+});
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,704 @@
+```html
+<!DOCTYPE html>
+
+<html lang="ar" dir="rtl">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Zizo Automotive</title>
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+
+    <style>
+
+        /* =====================================================
+           CUSTOMER CHOICE
+        ===================================================== */
+
+        .customer-choice {
+            padding: 80px 0;
+            background: #080808;
+        }
+
+        .choice-header {
+            text-align: center;
+            max-width: 750px;
+            margin: 0 auto 45px;
+        }
+
+        .choice-header h2 {
+            font-size: 38px;
+            margin: 12px 0;
+        }
+
+        .choice-header p {
+            color: #999;
+            line-height: 1.8;
+        }
+
+        .choice-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            max-width: 950px;
+            margin: auto;
+        }
+
+        .choice-card {
+            position: relative;
+            background: #121212;
+            border: 1px solid #292929;
+            border-radius: 18px;
+            padding: 45px 35px;
+            text-align: center;
+            text-decoration: none;
+            color: #fff;
+            transition:
+                transform .25s ease,
+                border-color .25s ease,
+                box-shadow .25s ease;
+            overflow: hidden;
+        }
+
+        .choice-card:hover {
+            transform: translateY(-7px);
+            border-color: #d4af37;
+            box-shadow: 0 15px 40px rgba(0,0,0,.35);
+        }
+
+        .choice-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #1d1d1d;
+            border: 1px solid #333;
+            font-size: 38px;
+        }
+
+        .choice-card h3 {
+            font-size: 27px;
+            margin-bottom: 12px;
+        }
+
+        .choice-card p {
+            color: #999;
+            line-height: 1.8;
+            margin-bottom: 25px;
+        }
+
+        .choice-arrow {
+            color: #d4af37;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .choice-card.buy .choice-icon {
+            border-color: #d4af37;
+        }
+
+        .choice-card.sell .choice-icon {
+            border-color: #555;
+        }
+
+        @media (max-width: 700px) {
+
+            .customer-choice {
+                padding: 55px 0;
+            }
+
+            .choice-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .choice-header h2 {
+                font-size: 28px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body class="rtl">
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header class="navbar">
+
+    <div class="container nav-container">
+
+        <a
+            href="index.html"
+            class="logo"
+        >
+            ZIZO
+            <span>AUTOMOTIVE</span>
+        </a>
+
+
+        <nav class="nav-links">
+
+            <a
+                href="index.html"
+                class="active"
+                data-i18n="home"
+            >
+                الرئيسية
+            </a>
+
+            <a
+                href="cars.html"
+                data-i18n="cars"
+            >
+                السيارات
+            </a>
+
+            <a
+                href="sell-car.html"
+                data-i18n="sell"
+            >
+                اعرض عربيتك
+            </a>
+
+            <a
+                href="contact.html"
+                data-i18n="contact"
+            >
+                تواصل معنا
+            </a>
+
+        </nav>
+
+
+        <div class="nav-actions">
+
+            <button
+                class="language-btn"
+                id="languageBtn"
+                type="button"
+            >
+                EN
+            </button>
+
+            <a
+                href="#customerChoice"
+                class="btn"
+            >
+                ابدأ الآن
+            </a>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<main>
+
+
+<!-- =====================================================
+     HERO
+===================================================== -->
+
+<section class="hero">
+
+    <div class="container hero-grid">
+
+        <div>
+
+            <div
+                class="eyebrow"
+                data-i18n="heroSmall"
+            >
+                زيزو أوتوموتيف
+            </div>
+
+
+            <h1>
+
+                <span data-i18n="heroTitle1">
+                    اختار العربية المناسبة.
+                </span>
+
+                <br>
+
+                <span data-i18n="heroTitle2">
+                    إحنا نفحصها.
+                </span>
+
+                <br>
+
+                <span data-i18n="heroTitle3">
+                    وإنت تقرر.
+                </span>
+
+            </h1>
+
+
+            <p data-i18n="heroText">
+                زيزو أوتوموتيف يربط المشترين الجادين بأصحاب
+                السيارات، مع فحص ومعاينة وتقييم العربية قبل
+                إتمام الصفقة.
+            </p>
+
+
+            <div class="hero-buttons">
+
+                <a
+                    href="#customerChoice"
+                    class="btn"
+                >
+                    ابدأ الآن
+                </a>
+
+                <a
+                    href="cars.html"
+                    class="btn btn-outline"
+                    data-i18n="browse"
+                >
+                    تصفح السيارات
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="hero-card">
+
+            <div class="car-brand">
+                ZIZO AUTOMOTIVE
+            </div>
+
+            <div class="hero-card-empty">
+                🚘
+            </div>
+
+            <p
+                style="color:#777;"
+            >
+                فحص • معاينة • وساطة
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     CUSTOMER CHOICE
+===================================================== -->
+
+<section
+    class="customer-choice"
+    id="customerChoice"
+>
+
+    <div class="container">
+
+        <div class="choice-header">
+
+            <div class="eyebrow">
+                ZIZO AUTOMOTIVE
+            </div>
+
+            <h2>
+                إنت داخل تعمل إيه؟
+            </h2>
+
+            <p>
+                اختار الخدمة المناسبة ليك وابدأ رحلتك مع
+                زيزو أوتوموتيف.
+            </p>
+
+        </div>
+
+
+        <div class="choice-grid">
+
+
+            <!-- ===============================
+                 BUY
+            ================================ -->
+
+            <a
+                href="customer-login.html?type=buy"
+                class="choice-card buy"
+            >
+
+                <div class="choice-icon">
+                    🚗
+                </div>
+
+                <h3>
+                    عايز أشتري عربية
+                </h3>
+
+                <p>
+                    تصفح السيارات المعروضة، استخدم البحث
+                    والفلاتر، شوف الصور والمواصفات، واطلب
+                    معاينة للعربية في الوقت المناسب ليك.
+                </p>
+
+                <div class="choice-arrow">
+                    ابدأ البحث عن عربية ←
+                </div>
+
+            </a>
+
+
+            <!-- ===============================
+                 SELL
+            ================================ -->
+
+            <a
+                href="sell-car.html"
+                class="choice-card sell"
+            >
+
+                <div class="choice-icon">
+                    💰
+                </div>
+
+                <h3>
+                    عايز أبيع عربيتي
+                </h3>
+
+                <p>
+                    سجل بيانات عربيتك، ارفع الصور والمواصفات،
+                    وخلي زيزو أوتوموتيف يساعدك توصل لمشتري جاد.
+                </p>
+
+                <div class="choice-arrow">
+                    اعرض عربيتك ←
+                </div>
+
+            </a>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     HOW IT WORKS
+===================================================== -->
+
+<section class="section">
+
+    <div class="container">
+
+        <div class="section-header">
+
+            <div
+                class="eyebrow"
+                data-i18n="how"
+            >
+                إزاي بنشتغل
+            </div>
+
+            <h2 data-i18n="howTitle">
+                شراء العربية أصبح أسهل.
+            </h2>
+
+            <p data-i18n="howText">
+                اختار العربية، اطلب المعاينة، وإحنا نتولى
+                الخطوة التالية.
+            </p>
+
+        </div>
+
+
+        <div class="steps">
+
+
+            <div class="step">
+
+                <div class="step-number">
+                    01
+                </div>
+
+                <h3 data-i18n="step1">
+                    اختار العربية
+                </h3>
+
+                <p data-i18n="step1Text">
+                    تصفح السيارات المعروضة وشوف المواصفات
+                    والكيلومترات والسعر وبيانات الرخصة.
+                </p>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-number">
+                    02
+                </div>
+
+                <h3 data-i18n="step2">
+                    اطلب المعاينة
+                </h3>
+
+                <p data-i18n="step2Text">
+                    لو عجبتك عربية، ابعت بياناتك وحدد الموعد
+                    المناسب ليك وإحنا نرتب المعاينة.
+                </p>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-number">
+                    03
+                </div>
+
+                <h3 data-i18n="step3">
+                    نفحص ونتفاوض
+                </h3>
+
+                <p data-i18n="step3Text">
+                    ننزل نفحص العربية ونساعد المشتري والبائع
+                    في إتمام الصفقة.
+                </p>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     CTA
+===================================================== -->
+
+<section class="cta">
+
+    <div class="container cta-inner">
+
+        <div>
+
+            <div
+                class="eyebrow"
+                style="color:#080808;"
+            >
+                ZIZO AUTOMOTIVE
+            </div>
+
+            <h2>
+                عندك عربية للبيع؟
+            </h2>
+
+            <p
+                style="
+                    margin-top:10px;
+                    max-width:600px;
+                "
+            >
+                خلي زيزو أوتوموتيف يساعدك توصل لمشتري جاد.
+            </p>
+
+        </div>
+
+
+        <a
+            href="sell-car.html"
+            class="btn btn-outline"
+        >
+            اعرض عربيتك
+        </a>
+
+    </div>
+
+</section>
+
+
+</main>
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer class="footer">
+
+    <div class="container footer-grid">
+
+
+        <div>
+
+            <div class="logo">
+
+                ZIZO
+
+                <span>
+                    AUTOMOTIVE
+                </span>
+
+            </div>
+
+            <p
+                style="margin-top:20px;"
+                data-i18n="footerText"
+            >
+                وساطة سيارات وفحص ومعاينة وبيع السيارات.
+            </p>
+
+        </div>
+
+
+        <div>
+
+            <h3>
+                Quick Links
+            </h3>
+
+            <div class="footer-links">
+
+                <a
+                    href="index.html"
+                    data-i18n="home"
+                >
+                    الرئيسية
+                </a>
+
+                <a
+                    href="cars.html"
+                    data-i18n="cars"
+                >
+                    السيارات
+                </a>
+
+                <a
+                    href="sell-car.html"
+                    data-i18n="sell"
+                >
+                    اعرض عربيتك
+                </a>
+
+                <a
+                    href="contact.html"
+                    data-i18n="contact"
+                >
+                    تواصل معنا
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div>
+
+            <h3 data-i18n="contact">
+                تواصل معنا
+            </h3>
+
+            <p>
+                Egypt
+            </p>
+
+            <p>
+                Zizo Automotive
+            </p>
+
+        </div>
+
+
+    </div>
+
+
+    <div class="container copyright">
+
+        © 2026 Zizo Automotive.
+        All rights reserved.
+
+    </div>
+
+</footer>
+
+
+<script src="js/app.js"></script>
+
+
+<script>
+
+    /*
+     * لو العميل اختار شراء،
+     * بنحفظ الاختيار مؤقتًا.
+     */
+
+    document
+        .querySelector(
+            'a[href="customer-login.html?type=buy"]'
+        )
+        ?.addEventListener(
+            "click",
+            function() {
+
+                sessionStorage.setItem(
+                    "zizoCustomerType",
+                    "buy"
+                );
+
+            }
+        );
+
+
+    /*
+     * لو العميل اختار بيع،
+     * بنحفظ الاختيار أيضًا.
+     */
+
+    document
+        .querySelector(
+            'a[href="sell-car.html"]'
+        )
+        ?.addEventListener(
+            "click",
+            function() {
+
+                sessionStorage.setItem(
+                    "zizoCustomerType",
+                    "sell"
+                );
+
+            }
+        );
+
+</script>
+
+</body>
+
+</html>
+```

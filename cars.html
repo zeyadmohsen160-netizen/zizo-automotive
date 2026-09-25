@@ -1,0 +1,663 @@
+```html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Zizo Automotive | Cars</title>
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+
+    <style>
+
+        .car-card-images {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fill,
+                    minmax(90px, 1fr)
+                );
+
+            gap: 6px;
+
+            margin-bottom: 15px;
+
+        }
+
+
+        .car-card-images img {
+
+            width: 100%;
+
+            height: 90px;
+
+            object-fit: cover;
+
+            border-radius: 8px;
+
+            background: #eee;
+
+        }
+
+
+        .car-main-image {
+
+            width: 100%;
+
+            height: 240px;
+
+            object-fit: cover;
+
+            border-radius: 12px;
+
+            margin-bottom: 10px;
+
+            background: #eee;
+
+        }
+
+
+        .no-image {
+
+            width: 100%;
+
+            height: 240px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background: #eee;
+
+            border-radius: 12px;
+
+            color: #777;
+
+        }
+
+    </style>
+
+</head>
+
+
+<body class="rtl">
+
+
+<header class="navbar">
+
+    <div class="container nav-container">
+
+        <a
+            href="index.html"
+            class="logo"
+        >
+
+            ZIZO
+
+            <span>
+                AUTOMOTIVE
+            </span>
+
+        </a>
+
+
+        <nav class="nav-links">
+
+            <a href="index.html">
+                الرئيسية
+            </a>
+
+            <a
+                href="cars.html"
+                class="active"
+            >
+                السيارات
+            </a>
+
+            <a href="sell-car.html">
+                اعرض عربيتك
+            </a>
+
+            <a href="contact.html">
+                تواصل معنا
+            </a>
+
+        </nav>
+
+
+        <div class="nav-actions">
+
+            <button
+                id="languageBtn"
+                class="language-btn"
+                type="button"
+            >
+                EN
+            </button>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<main>
+
+<section class="section">
+
+<div class="container">
+
+
+<div class="section-header">
+
+    <div class="eyebrow">
+        ZIZO AUTOMOTIVE
+    </div>
+
+    <h1>
+        السيارات
+    </h1>
+
+    <p>
+        اختار العربية المناسبة وإحنا نساعدك في المعاينة.
+    </p>
+
+</div>
+
+
+<div
+    id="carsContainer"
+    class="cars-grid"
+>
+
+    <div
+        style="
+            grid-column:1/-1;
+            text-align:center;
+            padding:80px 20px;
+            color:#777;
+        "
+    >
+
+        جاري تحميل السيارات...
+
+    </div>
+
+</div>
+
+
+</div>
+
+</section>
+
+
+<section class="cta">
+
+<div class="container cta-inner">
+
+    <div>
+
+        <div
+            class="eyebrow"
+            style="color:#080808;"
+        >
+            ZIZO AUTOMOTIVE
+        </div>
+
+        <h2>
+            عندك عربية للبيع؟
+        </h2>
+
+        <p
+            style="
+                margin-top:10px;
+                max-width:600px;
+            "
+        >
+            خلي زيزو أوتوموتيف يساعدك توصل لمشتري جاد.
+        </p>
+
+    </div>
+
+
+    <a
+        href="sell-car.html"
+        class="btn btn-outline"
+    >
+        اعرض عربيتك
+    </a>
+
+</div>
+
+</section>
+
+</main>
+
+
+<footer class="footer">
+
+<div class="container footer-grid">
+
+    <div>
+
+        <div class="logo">
+
+            ZIZO
+
+            <span>
+                AUTOMOTIVE
+            </span>
+
+        </div>
+
+        <p style="margin-top:20px;">
+
+            وساطة سيارات وفحص ومعاينة وبيع السيارات.
+
+        </p>
+
+    </div>
+
+
+    <div>
+
+        <h3>
+            Quick Links
+        </h3>
+
+        <div class="footer-links">
+
+            <a href="index.html">
+                الرئيسية
+            </a>
+
+            <a href="cars.html">
+                السيارات
+            </a>
+
+            <a href="sell-car.html">
+                اعرض عربيتك
+            </a>
+
+            <a href="contact.html">
+                تواصل معنا
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div>
+
+        <h3>
+            تواصل معنا
+        </h3>
+
+        <p>
+            Egypt
+        </p>
+
+        <p>
+            Zizo Automotive
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="container copyright">
+
+    © 2026 Zizo Automotive.
+    All rights reserved.
+
+</div>
+
+</footer>
+
+
+<script src="js/app.js"></script>
+
+
+<script>
+
+/* =========================================================
+   LOAD CARS
+========================================================= */
+
+async function loadCars() {
+
+    const container =
+        document.getElementById(
+            "carsContainer"
+        );
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/cars"
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            !response.ok ||
+            !data.success
+        ) {
+
+            throw new Error(
+                data.message ||
+                "Could not load cars."
+            );
+
+        }
+
+
+        container.innerHTML = "";
+
+
+        if (
+            !data.cars ||
+            data.cars.length === 0
+        ) {
+
+            container.innerHTML = `
+
+                <div
+                    style="
+                        grid-column:1/-1;
+                        text-align:center;
+                        padding:80px 20px;
+                        color:#777;
+                    "
+                >
+
+                    لا توجد سيارات معروضة حاليًا.
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        data.cars.forEach(
+            function(car) {
+
+                const card =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                card.className =
+                    "car-card";
+
+
+                const images =
+                    Array.isArray(
+                        car.images
+                    )
+                        ? car.images
+                        : [];
+
+
+                let imagesHTML = "";
+
+
+                if (
+                    images.length > 0
+                ) {
+
+                    /*
+                        الصورة الأولى كبيرة
+                    */
+
+                    imagesHTML += `
+
+                        <img
+                            class="car-main-image"
+                            src="${images[0]}"
+                            alt="${car.brand} ${car.model}"
+                            loading="lazy"
+                        >
+
+                    `;
+
+
+                    /*
+                        باقي الصور
+                    */
+
+                    if (
+                        images.length > 1
+                    ) {
+
+                        imagesHTML += `
+
+                            <div
+                                class="car-card-images"
+                            >
+
+                                ${images
+                                    .slice(1)
+                                    .map(
+                                        function(image) {
+
+                                            return `
+
+                                                <img
+                                                    src="${image}"
+                                                    alt="${car.brand} ${car.model}"
+                                                    loading="lazy"
+                                                >
+
+                                            `;
+
+                                        }
+                                    )
+                                    .join("")}
+
+                            </div>
+
+                        `;
+
+                    }
+
+                } else {
+
+                    imagesHTML = `
+
+                        <div class="no-image">
+
+                            لا توجد صورة
+
+                        </div>
+
+                    `;
+
+                }
+
+
+                card.innerHTML = `
+
+                    ${imagesHTML}
+
+
+                    <div class="car-card-content">
+
+                        <h3>
+
+                            ${escapeHTML(
+                                car.brand
+                            )}
+
+                            ${escapeHTML(
+                                car.model
+                            )}
+
+                        </h3>
+
+
+                        <p>
+
+                            سنة ${car.year}
+
+                        </p>
+
+
+                        ${
+                            car.mileage
+                                ? `
+                                    <p>
+                                        ${Number(
+                                            car.mileage
+                                        ).toLocaleString()}
+                                        كم
+                                    </p>
+                                  `
+                                : ""
+                        }
+
+
+                        ${
+                            car.price
+                                ? `
+                                    <h4>
+
+                                        ${Number(
+                                            car.price
+                                        ).toLocaleString()}
+                                        جنيه
+
+                                    </h4>
+                                  `
+                                : ""
+                        }
+
+                    </div>
+
+                `;
+
+
+                container.appendChild(
+                    card
+                );
+
+            }
+        );
+
+    }
+
+    catch(error) {
+
+        console.error(
+            error
+        );
+
+
+        container.innerHTML = `
+
+            <div
+                style="
+                    grid-column:1/-1;
+                    text-align:center;
+                    padding:80px 20px;
+                    color:#777;
+                "
+            >
+
+                حدث خطأ أثناء تحميل السيارات.
+
+                <br><br>
+
+                ${escapeHTML(
+                    error.message
+                )}
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHTML(value) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return "";
+
+    }
+
+
+    return String(value)
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* =========================================================
+   START
+========================================================= */
+
+loadCars();
+
+</script>
+
+
+</body>
+
+</html>
+```

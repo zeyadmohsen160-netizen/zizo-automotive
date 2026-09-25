@@ -1,0 +1,1296 @@
+```html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Zizo Automotive | Sell Your Car</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+
+        .image-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .preview-item {
+            position: relative;
+            height: 190px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #f1f1f1;
+            border: 1px solid #ddd;
+        }
+
+        .preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            background: #f5f5f5;
+        }
+
+        .preview-number {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #000;
+            color: #fff;
+            padding: 5px 9px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .remove-image {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 50%;
+            background: #fff;
+            color: #000;
+            font-size: 20px;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,.2);
+            z-index: 5;
+        }
+
+        .remove-image:hover {
+            background: #000;
+            color: #fff;
+        }
+
+        .image-count {
+            margin-top: 10px;
+            font-weight: 700;
+        }
+
+        .image-error {
+            margin-top: 10px;
+            padding: 12px;
+            border-radius: 8px;
+            background: #fff;
+            border: 1px solid #000;
+            color: #000;
+            display: none;
+        }
+
+        .image-select-note {
+            margin-top: 10px;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .add-more-images {
+            margin-top: 15px;
+            display: inline-block;
+            padding: 10px 16px;
+            background: #000;
+            color: #fff;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .add-more-images:hover {
+            opacity: .85;
+        }
+
+        #additionalImages {
+            display: none;
+        }
+
+        .form-message {
+            margin-top: 20px;
+            display: none;
+        }
+
+    </style>
+
+</head>
+
+
+<body class="rtl">
+
+
+<header class="navbar">
+
+    <div class="container nav-container">
+
+        <a href="index.html" class="logo">
+
+            ZIZO
+
+            <span>
+                AUTOMOTIVE
+            </span>
+
+        </a>
+
+
+        <nav class="nav-links">
+
+            <a href="index.html" data-i18n="home">
+                الرئيسية
+            </a>
+
+            <a href="cars.html" data-i18n="cars">
+                السيارات
+            </a>
+
+            <a href="sell-car.html" class="active" data-i18n="sell">
+                اعرض عربيتك
+            </a>
+
+            <a href="contact.html" data-i18n="contact">
+                تواصل معنا
+            </a>
+
+        </nav>
+
+
+        <div class="nav-actions">
+
+            <button
+                id="languageBtn"
+                class="language-btn"
+                type="button"
+            >
+                EN
+            </button>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<main>
+
+<section class="section">
+
+<div class="container">
+
+
+<div class="section-header">
+
+    <div class="eyebrow">
+        ZIZO AUTOMOTIVE
+    </div>
+
+    <h1 data-i18n="sellTitle">
+        اعرض عربيتك
+    </h1>
+
+    <p data-i18n="sellText">
+        أدخل بيانات العربية وسنتواصل معك لمراجعتها ومعاينتها.
+    </p>
+
+</div>
+
+
+<div class="form-card">
+
+
+<form
+    id="sellCarForm"
+    enctype="multipart/form-data"
+    novalidate
+>
+
+
+<h2>
+    بيانات العربية
+</h2>
+
+
+<div class="form-grid">
+
+
+<div class="form-group">
+
+    <label for="brand">
+        الماركة
+    </label>
+
+    <input
+        type="text"
+        id="brand"
+        name="brand"
+        required
+        placeholder="مثال: Hyundai"
+    >
+
+</div>
+
+
+<div class="form-group">
+
+    <label for="model">
+        الموديل
+    </label>
+
+    <input
+        type="text"
+        id="model"
+        name="model"
+        required
+        placeholder="مثال: Elantra"
+    >
+
+</div>
+
+
+<div class="form-group">
+
+    <label for="year">
+        سنة الصنع
+    </label>
+
+    <input
+        type="number"
+        id="year"
+        name="year"
+        min="1950"
+        max="2030"
+        required
+        placeholder="2025"
+    >
+
+</div>
+
+
+<div class="form-group">
+
+    <label for="mileage">
+        الكيلومترات
+    </label>
+
+    <input
+        type="number"
+        id="mileage"
+        name="mileage"
+        min="0"
+        placeholder="50000"
+    >
+
+</div>
+
+
+<div class="form-group">
+
+    <label for="price">
+        السعر المطلوب
+    </label>
+
+    <input
+        type="number"
+        id="price"
+        name="price"
+        min="0"
+        placeholder="1500000"
+    >
+
+</div>
+
+
+<div class="form-group">
+
+    <label for="transmission">
+        ناقل الحركة
+    </label>
+
+    <select
+        id="transmission"
+        name="transmission"
+    >
+
+        <option value="">
+            اختر
+        </option>
+
+        <option value="Automatic">
+            أوتوماتيك
+        </option>
+
+        <option value="Manual">
+            مانيوال
+        </option>
+
+        <option value="CVT">
+            CVT
+        </option>
+
+    </select>
+
+</div>
+
+
+<div class="form-group">
+
+    <label for="condition">
+        حالة العربية
+    </label>
+
+    <select
+        id="condition"
+        name="condition"
+    >
+
+        <option value="">
+            اختر
+        </option>
+
+        <option value="Excellent">
+            ممتازة
+        </option>
+
+        <option value="Very Good">
+            جيدة جدًا
+        </option>
+
+        <option value="Good">
+            جيدة
+        </option>
+
+        <option value="Needs Inspection">
+            تحتاج فحص
+        </option>
+
+    </select>
+
+</div>
+
+
+<div class="form-group">
+
+    <label for="traffic_department">
+        المرور
+    </label>
+
+    <input
+        type="text"
+        id="traffic_department"
+        name="traffic_department"
+        placeholder="مثال: مرور أكتوبر"
+    >
+
+</div>
+
+
+<div class="form-group">
+
+    <label for="license_remaining">
+        الرخصة فاضل فيها قد إيه؟
+    </label>
+
+    <input
+        type="text"
+        id="license_remaining"
+        name="license_remaining"
+        placeholder="مثال: سنة و6 شهور"
+    >
+
+</div>
+
+
+<div class="form-group full-width">
+
+    <label for="description">
+        وصف العربية
+    </label>
+
+    <textarea
+        id="description"
+        name="description"
+        rows="6"
+        placeholder="اكتب أي تفاصيل مهمة عن العربية..."
+    ></textarea>
+
+</div>
+
+
+</div>
+
+
+<!-- ================================
+     IMAGES
+================================ -->
+
+<h2>
+    صور العربية
+</h2>
+
+
+<p class="form-note">
+
+    <strong>
+        يجب رفع صورة واحدة على الأقل.
+    </strong>
+
+    يمكنك إضافة أي عدد من الصور الإضافية.
+
+</p>
+
+
+<div class="form-group">
+
+    <label for="images">
+        اختر صور العربية
+    </label>
+
+
+    <!--
+        مهم جدًا:
+
+        name="images"
+
+        هو نفس الاسم الموجود في server.js:
+
+        upload.array("images")
+    -->
+
+    <input
+        type="file"
+        id="images"
+        name="images"
+        accept="image/jpeg,image/png,image/webp,image/jpg"
+        multiple
+    >
+
+
+    <input
+        type="file"
+        id="additionalImages"
+        accept="image/jpeg,image/png,image/webp,image/jpg"
+        multiple
+    >
+
+
+    <label
+        for="images"
+        class="add-more-images"
+    >
+        📷 اختيار الصور
+    </label>
+
+
+    <small class="image-select-note">
+
+        يمكنك اختيار أكثر من صورة مرة واحدة،
+        أو إضافة صور أخرى.
+
+        <br>
+
+        الحد الأقصى لحجم الصورة الواحدة 5MB.
+
+    </small>
+
+
+    <div
+        id="imageCount"
+        class="image-count"
+    >
+        لم يتم اختيار صور.
+    </div>
+
+
+    <div
+        id="imageError"
+        class="image-error"
+    ></div>
+
+
+    <div
+        id="imagePreview"
+        class="image-preview"
+    ></div>
+
+</div>
+
+
+<!-- ================================
+     PRIVATE INFORMATION
+================================ -->
+
+<div class="private-section">
+
+
+<div class="private-title">
+
+    <span>
+        🔒
+    </span>
+
+    <div>
+
+        <h2>
+            بيانات خاصة
+        </h2>
+
+        <p>
+            هذه البيانات لن تظهر في إعلان العربية.
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="form-grid">
+
+
+<div class="form-group">
+
+    <label for="seller_name">
+        اسم صاحب العربية
+    </label>
+
+    <input
+        type="text"
+        id="seller_name"
+        name="seller_name"
+        required
+        placeholder="الاسم"
+    >
+
+</div>
+
+
+<div class="form-group">
+
+    <label for="seller_phone">
+        رقم صاحب العربية
+    </label>
+
+    <input
+        type="tel"
+        id="seller_phone"
+        name="seller_phone"
+        required
+        placeholder="01xxxxxxxxx"
+    >
+
+</div>
+
+
+<div class="form-group full-width">
+
+    <label for="car_location">
+        مكان العربية
+    </label>
+
+    <input
+        type="text"
+        id="car_location"
+        name="car_location"
+        required
+        placeholder="مثال: 6 أكتوبر - الحي السابع"
+    >
+
+    <small>
+        المكان سيظهر لك أنت فقط كوسيط ولن يظهر للمشتري.
+    </small>
+
+</div>
+
+</div>
+
+</div>
+
+
+<button
+    type="submit"
+    class="btn submit-btn"
+>
+    إرسال بيانات العربية
+</button>
+
+
+<div
+    id="formMessage"
+    class="form-message"
+></div>
+
+
+</form>
+
+</div>
+
+</div>
+
+</section>
+
+</main>
+
+
+<footer class="footer">
+
+    <div class="container copyright">
+
+        © 2026 Zizo Automotive.
+        All rights reserved.
+
+    </div>
+
+</footer>
+
+
+<script src="js/app.js"></script>
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const form = document.getElementById("sellCarForm");
+
+    const imagesInput = document.getElementById("images");
+
+    const additionalImagesInput =
+        document.getElementById("additionalImages");
+
+    const imagePreview =
+        document.getElementById("imagePreview");
+
+    const imageCount =
+        document.getElementById("imageCount");
+
+    const imageError =
+        document.getElementById("imageError");
+
+    const formMessage =
+        document.getElementById("formMessage");
+
+    const submitButton =
+        form.querySelector('button[type="submit"]');
+
+
+    const MAX_FILE_SIZE = 5 * 1024 * 1024;
+
+
+    /*
+     * هنا بنحتفظ بكل الصور.
+     */
+
+    let selectedFiles = [];
+
+
+    /* =========================================
+       ERROR
+    ========================================= */
+
+    function showImageError(message) {
+
+        imageError.textContent = message;
+
+        imageError.style.display = "block";
+
+    }
+
+
+    function clearImageError() {
+
+        imageError.textContent = "";
+
+        imageError.style.display = "none";
+
+    }
+
+
+    /* =========================================
+       ADD FILES
+    ========================================= */
+
+    function addFiles(fileList) {
+
+        clearImageError();
+
+        const files = Array.from(fileList || []);
+
+
+        if (files.length === 0) {
+            return;
+        }
+
+
+        for (const file of files) {
+
+            if (!file.type.startsWith("image/")) {
+
+                showImageError(
+                    `الملف "${file.name}" ليس صورة.`
+                );
+
+                return;
+            }
+
+
+            if (file.size > MAX_FILE_SIZE) {
+
+                showImageError(
+                    `الصورة "${file.name}" أكبر من 5MB.`
+                );
+
+                return;
+            }
+
+        }
+
+
+        for (const file of files) {
+
+            const exists = selectedFiles.some(function (oldFile) {
+
+                return (
+                    oldFile.name === file.name &&
+                    oldFile.size === file.size &&
+                    oldFile.lastModified === file.lastModified
+                );
+
+            });
+
+
+            if (!exists) {
+
+                selectedFiles.push(file);
+
+            }
+
+        }
+
+
+        renderPreview();
+
+    }
+
+
+    /* =========================================
+       FIRST IMAGE INPUT
+    ========================================= */
+
+    imagesInput.addEventListener("change", function () {
+
+        addFiles(this.files);
+
+        this.value = "";
+
+    });
+
+
+    /* =========================================
+       ADDITIONAL IMAGE INPUT
+    ========================================= */
+
+    additionalImagesInput.addEventListener(
+        "change",
+        function () {
+
+            addFiles(this.files);
+
+            this.value = "";
+
+        }
+    );
+
+
+    /* =========================================
+       PREVIEW
+    ========================================= */
+
+    function renderPreview() {
+
+        imagePreview.innerHTML = "";
+
+
+        if (selectedFiles.length === 0) {
+
+            imageCount.textContent =
+                "لم يتم اختيار صور.";
+
+            return;
+
+        }
+
+
+        imageCount.textContent =
+            `تم اختيار ${selectedFiles.length} صورة.`;
+
+
+        selectedFiles.forEach(function (file, index) {
+
+            const item =
+                document.createElement("div");
+
+            item.className =
+                "preview-item";
+
+
+            const img =
+                document.createElement("img");
+
+
+            const remove =
+                document.createElement("button");
+
+
+            const number =
+                document.createElement("span");
+
+
+            img.alt =
+                `Car Image ${index + 1}`;
+
+
+            remove.type = "button";
+
+            remove.className =
+                "remove-image";
+
+            remove.innerHTML = "×";
+
+            remove.title = "حذف الصورة";
+
+
+            number.className =
+                "preview-number";
+
+            number.textContent =
+                `صورة ${index + 1}`;
+
+
+            const reader =
+                new FileReader();
+
+
+            reader.onload = function (event) {
+
+                img.src =
+                    event.target.result;
+
+            };
+
+
+            reader.readAsDataURL(file);
+
+
+            remove.addEventListener(
+                "click",
+                function () {
+
+                    selectedFiles.splice(index, 1);
+
+                    renderPreview();
+
+                }
+            );
+
+
+            item.appendChild(img);
+
+            item.appendChild(number);
+
+            item.appendChild(remove);
+
+            imagePreview.appendChild(item);
+
+        });
+
+    }
+
+
+    /* =========================================
+       FORM SUBMIT
+    ========================================= */
+
+    form.addEventListener(
+        "submit",
+        async function (event) {
+
+            event.preventDefault();
+
+
+            formMessage.style.display = "none";
+
+            formMessage.textContent = "";
+
+            clearImageError();
+
+
+            /* ===============================
+               CHECK IMAGES
+            =============================== */
+
+            if (selectedFiles.length === 0) {
+
+                showImageError(
+                    "من فضلك اختر صورة واحدة على الأقل للعربية."
+                );
+
+                imageCount.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
+
+                return;
+
+            }
+
+
+            /* ===============================
+               CHECK FILE SIZE
+            =============================== */
+
+            for (const file of selectedFiles) {
+
+                if (file.size > MAX_FILE_SIZE) {
+
+                    showImageError(
+                        `الصورة "${file.name}" أكبر من 5MB.`
+                    );
+
+                    return;
+
+                }
+
+            }
+
+
+            /* ===============================
+               CHECK REQUIRED DATA
+            =============================== */
+
+            const requiredFields = [
+                "brand",
+                "model",
+                "year",
+                "seller_name",
+                "seller_phone",
+                "car_location"
+            ];
+
+
+            for (const fieldName of requiredFields) {
+
+                const field =
+                    form.elements[fieldName];
+
+
+                if (
+                    !field ||
+                    !field.value.trim()
+                ) {
+
+                    field.focus();
+
+                    formMessage.textContent =
+                        "من فضلك أكمل البيانات المطلوبة.";
+
+                    formMessage.style.display =
+                        "block";
+
+                    return;
+
+                }
+
+            }
+
+
+            /* =========================================
+               CREATE FORMDATA
+            ========================================= */
+
+            const formData =
+                new FormData();
+
+
+            /*
+             * البيانات النصية
+             */
+
+            const fields = [
+                "brand",
+                "model",
+                "year",
+                "mileage",
+                "price",
+                "transmission",
+                "condition",
+                "traffic_department",
+                "license_remaining",
+                "description",
+                "seller_name",
+                "seller_phone",
+                "car_location"
+            ];
+
+
+            fields.forEach(function (fieldName) {
+
+                const field =
+                    form.elements[fieldName];
+
+
+                if (field) {
+
+                    formData.append(
+                        fieldName,
+                        field.value
+                    );
+
+                }
+
+            });
+
+
+            /*
+             * الصور
+             *
+             * مهم جدًا:
+             *
+             * server.js:
+             *
+             * upload.array("images")
+             *
+             * لذلك لازم الاسم يكون:
+             *
+             * images
+             */
+
+            selectedFiles.forEach(function (file) {
+
+                formData.append(
+                    "images",
+                    file,
+                    file.name
+                );
+
+            });
+
+
+            /* =========================================
+               DEBUG
+            ========================================= */
+
+            console.log("Sending car data...");
+
+            console.log(
+                "Images:",
+                selectedFiles.length
+            );
+
+
+            for (const file of selectedFiles) {
+
+                console.log(
+                    "Uploading:",
+                    file.name,
+                    file.size,
+                    file.type
+                );
+
+            }
+
+
+            /* =========================================
+               BUTTON
+            ========================================= */
+
+            const originalText =
+                submitButton.textContent;
+
+
+            submitButton.disabled = true;
+
+            submitButton.textContent =
+                "جاري رفع الصور والبيانات...";
+
+
+            /* =========================================
+               SEND REQUEST
+            ========================================= */
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/cars",
+                        {
+                            method: "POST",
+                            body: formData
+                        }
+                    );
+
+
+                const text =
+                    await response.text();
+
+
+                let data;
+
+
+                try {
+
+                    data =
+                        JSON.parse(text);
+
+                }
+                catch (jsonError) {
+
+                    console.error(
+                        "Invalid server response:",
+                        text
+                    );
+
+                    throw new Error(
+                        "السيرفر أرسل رد غير صحيح."
+                    );
+
+                }
+
+
+                console.log(
+                    "Server response:",
+                    data
+                );
+
+
+                if (
+                    !response.ok ||
+                    !data.success
+                ) {
+
+                    throw new Error(
+                        data.message ||
+                        "حدث خطأ أثناء إرسال البيانات."
+                    );
+
+                }
+
+
+                /* =========================================
+                   SUCCESS
+                ========================================= */
+
+                const uploadedCount =
+                    data.imagesCount ||
+                    selectedFiles.length;
+
+
+                formMessage.textContent =
+                    `تم إرسال العربية بنجاح وتم رفع ${uploadedCount} صورة.`;
+
+
+                formMessage.style.display =
+                    "block";
+
+
+                formMessage.style.color =
+                    "#000";
+
+
+                formMessage.style.background =
+                    "#f5f5f5";
+
+
+                formMessage.style.padding =
+                    "15px";
+
+
+                formMessage.style.borderRadius =
+                    "10px";
+
+
+                /* =========================================
+                   RESET
+                ========================================= */
+
+                form.reset();
+
+                selectedFiles = [];
+
+                imagePreview.innerHTML = "";
+
+                imageCount.textContent =
+                    "لم يتم اختيار صور.";
+
+
+                clearImageError();
+
+
+            }
+            catch (error) {
+
+                console.error(
+                    "Sell car error:",
+                    error
+                );
+
+
+                formMessage.textContent =
+                    error.message ||
+                    "حدث خطأ أثناء إرسال بيانات العربية.";
+
+
+                formMessage.style.display =
+                    "block";
+
+
+                formMessage.style.color =
+                    "#000";
+
+
+                formMessage.style.background =
+                    "#fff";
+
+
+                formMessage.style.border =
+                    "1px solid #000";
+
+
+                formMessage.style.padding =
+                    "15px";
+
+
+                formMessage.style.borderRadius =
+                    "10px";
+
+            }
+            finally {
+
+                submitButton.disabled =
+                    false;
+
+                submitButton.textContent =
+                    originalText;
+
+            }
+
+        }
+    );
+
+});
+
+</script>
+
+
+</body>
+
+</html>
+```
