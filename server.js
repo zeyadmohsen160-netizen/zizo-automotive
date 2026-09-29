@@ -405,6 +405,192 @@ app.get(
 );
 
 /* =========================================================
+   PUBLIC - SELLER SUBMITS CAR
+========================================================= */
+
+app.post(
+    "/api/cars",
+    upload.array("images", 20),
+    (req, res) => {
+
+        const {
+            brand,
+            model,
+            year,
+            mileage,
+            price,
+            transmission,
+            condition,
+            traffic_department,
+            license_remaining,
+            description,
+            seller_name,
+            seller_phone,
+            car_location
+        } = req.body;
+
+        if (
+            !brand ||
+            !model ||
+            !year ||
+            !seller_name ||
+            !seller_phone ||
+            !car_location
+        ) {
+            if (req.files && req.files.length) {
+                req.files.forEach(file => {
+                    try {
+                        fs.unlinkSync(file.path);
+                    } catch (cleanupError) {
+                        console.error("Cleanup error:", cleanupError.message);
+                    }
+                });
+            }
+
+            return res.status(400).json({
+                success: false,
+                message: "Required fields are missing."
+            });
+        }
+
+        const numericYear = Number(year);
+
+        if (!Number.isInteger(numericYear)) {
+            if (req.files && req.files.length) {
+                req.files.forEach(file => {
+                    try {
+                        fs.unlinkSync(file.path);
+                    } catch (cleanupError) {
+                        console.error("Cleanup error:", cleanupError.message);
+                    }
+                });
+            }
+
+            return res.status(400).json({
+                success: false,
+                message: "Invalid year."
+            });
+        }
+
+        if (!req.files || req.files.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: "At least one image is required."
+            });
+        }
+
+        db.run(
+            `
+            INSERT INTO cars (
+                brand,
+                model,
+                year,
+                mileage,
+                price,
+                transmission,
+                condition,
+                traffic_department,
+                license_remaining,
+                description,
+                seller_name,
+                seller_phone,
+                car_location,
+                status
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'available')
+            `,
+            [
+                String(brand).trim(),
+                String(model).trim(),
+                numericYear,
+                mileage ? Number(mileage) : null,
+                price ? Number(price) : null,
+                transmission ? String(transmission).trim() : null,
+                condition ? String(condition).trim() : null,
+                traffic_department ? String(traffic_department).trim() : null,
+                license_remaining ? String(license_remaining).trim() : null,
+                description ? String(description).trim() : null,
+                String(seller_name).trim(),
+                String(seller_phone).trim(),
+                String(car_location).trim()
+            ],
+            function (error) {
+
+                if (error) {
+                    console.error("Seller car insert error:", error.message);
+
+                    if (req.files && req.files.length) {
+                        req.files.forEach(file => {
+                            try {
+                                fs.unlinkSync(file.path);
+                            } catch (cleanupError) {
+                                console.error("Cleanup error:", cleanupError.message);
+                            }
+                        });
+                    }
+
+                    return res.status(500).json({
+                        success: false,
+                        message: "Could not save car."
+                    });
+                }
+
+                const carId = this.lastID;
+                const placeholders = req.files.map(() => "(?, ?)").join(", ");
+                const values = [];
+
+                req.files.forEach(file => {
+                    values.push(carId);
+                    values.push("/images/" + file.filename);
+                });
+
+                db.run(
+                    `
+                    INSERT INTO car_images (
+                        car_id,
+                        image_path
+                    )
+                    VALUES ${placeholders}
+                    `,
+                    values,
+                    function (imageError) {
+
+                        if (imageError) {
+                            console.error("Seller car images error:", imageError.message);
+
+                            db.run(
+                                "DELETE FROM cars WHERE id = ?",
+                                [carId]
+                            );
+
+                            req.files.forEach(file => {
+                                try {
+                                    fs.unlinkSync(file.path);
+                                } catch (cleanupError) {
+                                    console.error("Cleanup error:", cleanupError.message);
+                                }
+                            });
+
+                            return res.status(500).json({
+                                success: false,
+                                message: "Could not save car images."
+                            });
+                        }
+
+                        return res.status(201).json({
+                            success: true,
+                            message: "Car submitted successfully.",
+                            car_id: carId,
+                            imagesCount: req.files.length
+                        });
+                    }
+                );
+            }
+        );
+    }
+);
+
+/* =========================================================
    PUBLIC - ALL CARS
 ========================================================= */
 
