@@ -23,13 +23,13 @@
 
             background: #fff;
 
-            border-radius: 16px;
+            border-radius: 14px;
 
-            padding: 20px;
+            padding: 12px 16px;
 
-            margin-bottom: 30px;
+            margin-bottom: 25px;
 
-            box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.06);
 
             border: 1px solid #eee;
 
@@ -40,31 +40,23 @@
 
             display: grid;
 
-            grid-template-columns:
-                minmax(200px, 2fr)
-                minmax(180px, 1fr);
+            grid-template-columns: minmax(260px, 2fr) minmax(180px, 1fr);
 
-            gap: 15px;
+            gap: 10px;
 
         }
 
 
         .cars-search-field {
 
-            display: flex;
-
-            flex-direction: column;
-
-            gap: 8px;
+            position: relative;
 
         }
 
 
         .cars-search-field label {
 
-            font-weight: 700;
-
-            font-size: 14px;
+            display: none;
 
         }
 
@@ -111,9 +103,9 @@
 
             align-items: center;
 
-            gap: 15px;
+            gap: 10px;
 
-            margin-top: 15px;
+            margin-top: 10px;
 
             flex-wrap: wrap;
 
@@ -131,13 +123,13 @@
 
         #clearFiltersBtn {
 
-            border: 1px solid #d4af37;
+            border: 0;
 
             background: transparent;
 
-            color: #111;
+            color: #777;
 
-            padding: 9px 16px;
+            padding: 5px 10px;
 
             border-radius: 8px;
 
@@ -149,8 +141,6 @@
 
 
         #clearFiltersBtn:hover {
-
-            background: #d4af37;
 
             color: #000;
 
@@ -365,39 +355,29 @@
 
 
 <!-- =========================================================
-     SEARCH & FILTERS
+     SEARCH
 ========================================================= -->
 
 <div class="cars-search-box">
 
     <div class="cars-search-grid">
 
-
-        <!-- SEARCH -->
-
         <div class="cars-search-field">
 
-            <label for="carSearch">
-                🔎 ابحث عن سيارة
-            </label>
+            <label for="carSearch">بحث</label>
 
             <input
                 type="text"
                 id="carSearch"
-                placeholder="اكتب الماركة أو الموديل..."
+                placeholder="🔎 ابحث عن الماركة أو الموديل..."
                 autocomplete="off"
             >
 
         </div>
 
-
-        <!-- BRAND -->
-
         <div class="cars-search-field">
 
-            <label for="brandFilter">
-                🚘 الماركة
-            </label>
+            <label for="brandFilter">الماركة</label>
 
             <select id="brandFilter">
 
@@ -409,16 +389,13 @@
 
         </div>
 
-
     </div>
-
 
     <div class="cars-search-bottom">
 
         <span id="resultsCount">
             جاري تحميل السيارات...
         </span>
-
 
         <button
             type="button"
