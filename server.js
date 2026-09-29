@@ -3,6 +3,7 @@ const sqlite3 = require("sqlite3").verbose();
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const crypto = require("crypto");
 
 const app = express();
 
@@ -202,6 +203,24 @@ db.serialize(() => {
 
         )
     `);
+
+    db.run(`
+        CREATE TABLE IF NOT EXISTS customers (
+
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+            name TEXT NOT NULL,
+
+            phone TEXT NOT NULL UNIQUE,
+
+            password TEXT NOT NULL,
+
+            created_at DATETIME
+                DEFAULT CURRENT_TIMESTAMP
+
+        )
+    `);
+
 
 });
 
@@ -479,8 +498,12 @@ app.get(
                                 ) {
 
                                     carsWithImages.sort(
-                                        (a, b) =>
-                                            b.id - a.id
+                                        (
+                                            first,
+                                            second
+                                        ) =>
+                                            second.id -
+                                            first.id
                                     );
 
                                     return res.json({
@@ -507,7 +530,7 @@ app.get(
 );
 
 /* =========================================================
-   PUBLIC - ONE CAR
+   PUBLIC - SINGLE CAR
 ========================================================= */
 
 app.get(
@@ -570,17 +593,16 @@ app.get(
             FROM cars
 
             WHERE id = ?
+
+              AND status = 'available'
             `,
             [carId],
-            (
-                error,
-                car
-            ) => {
+            (error, car) => {
 
                 if (error) {
 
                     console.error(
-                        "Get car error:",
+                        "Load car error:",
                         error.message
                     );
 
@@ -589,7 +611,7 @@ app.get(
                         success: false,
 
                         message:
-                            "Database error."
+                            "Could not load car."
 
                     });
 
@@ -633,7 +655,7 @@ app.get(
                         if (imageError) {
 
                             console.error(
-                                "Get car images error:",
+                                "Load car images error:",
                                 imageError.message
                             );
 
@@ -680,11 +702,446 @@ app.get(
 );
 
 /* =========================================================
-   ADD CAR
+   PUBLIC - INSPECTION REQUEST
 ========================================================= */
 
 app.post(
-    "/api/cars",
+    "/api/inspection",
+    (req, res) => {
+
+        const {
+            car_id,
+            buyer_name,
+            buyer_phone
+        } = req.body;
+
+
+        const carId =
+            Number(car_id);
+
+
+        if (
+            !Number.isInteger(carId) ||
+            carId <= 0
+        ) {
+
+            return res.status(400).json({
+
+                success: false,
+
+                message:
+                    "Invalid car ID."
+
+            });
+
+        }
+
+
+        if (
+            !buyer_name ||
+            !buyer_phone
+        ) {
+
+            return res.status(400).json({
+
+                success: false,
+
+                message:
+                    "Name and phone are required."
+
+            });
+
+        }
+
+
+        db.get(
+            `
+            SELECT id
+
+            FROM cars
+
+            WHERE id = ?
+
+              AND status = 'available'
+            `,
+            [carId],
+            (carError, car) => {
+
+                if (carError) {
+
+                    console.error(
+                        "Inspection car check error:",
+                        carError.message
+                    );
+
+                    return res.status(500).json({
+
+                        success: false,
+
+                        message:
+                            "Could not verify car."
+
+                    });
+
+                }
+
+
+                if (!car) {
+
+                    return res.status(404).json({
+
+                        success: false,
+
+                        message:
+                            "Car not found."
+
+                    });
+
+                }
+
+
+                db.run(
+                    `
+                    INSERT INTO inspection_requests (
+
+                        car_id,
+
+                        buyer_name,
+
+                        buyer_phone
+
+                    )
+
+                    VALUES (?, ?, ?)
+                    `,
+                    [
+                        carId,
+
+                        String(
+                            buyer_name
+                        ).trim(),
+
+                        String(
+                            buyer_phone
+                        ).trim()
+
+                    ],
+                    function (error) {
+
+                        if (error) {
+
+                            console.error(
+                                "Inspection request error:",
+                                error.message
+                            );
+
+                            return res.status(500).json({
+
+                                success: false,
+
+                                message:
+                                    "Could not create inspection request."
+
+                            });
+
+                        }
+
+
+                        return res.status(201).json({
+
+                            success: true,
+
+                            message:
+                                "Inspection request submitted successfully.",
+
+                            request_id:
+                                this.lastID
+
+                        });
+
+                    }
+                );
+
+            }
+        );
+
+    }
+);
+
+/* =========================================================
+   ADMIN AUTHENTICATION
+========================================================= */
+
+function adminAuthentication(
+    req,
+    res,
+    next
+) {
+
+    const password =
+        req.headers[
+            "x-admin-password"
+        ];
+
+
+    if (
+        password !==
+        "Zizo@2026"
+    ) {
+
+        return res.status(401).json({
+
+            success: false,
+
+            message:
+                "Unauthorized."
+
+        });
+
+    }
+
+
+    next();
+
+}
+
+/* =========================================================
+   ADMIN - GET ALL CARS
+========================================================= */
+
+app.get(
+    "/api/admin/cars",
+    adminAuthentication,
+    (req, res) => {
+
+        db.all(
+            `
+            SELECT *
+
+            FROM cars
+
+            ORDER BY id DESC
+            `,
+            [],
+            (error, cars) => {
+
+                if (error) {
+
+                    console.error(
+                        "Admin cars error:",
+                        error.message
+                    );
+
+                    return res.status(500).json({
+
+                        success: false,
+
+                        message:
+                            "Could not load cars."
+
+                    });
+
+                }
+
+
+                if (
+                    !cars ||
+                    cars.length === 0
+                ) {
+
+                    return res.json({
+
+                        success: true,
+
+                        cars: []
+
+                    });
+
+                }
+
+
+                let completed = 0;
+
+                const carsWithImages = [];
+
+
+                cars.forEach(
+                    (car) => {
+
+                        db.all(
+                            `
+                            SELECT
+
+                                id,
+
+                                image_path
+
+                            FROM car_images
+
+                            WHERE car_id = ?
+
+                            ORDER BY id ASC
+                            `,
+                            [car.id],
+                            (
+                                imageError,
+                                images
+                            ) => {
+
+                                if (imageError) {
+
+                                    console.error(
+                                        "Admin images error:",
+                                        imageError.message
+                                    );
+
+                                    return res.status(500).json({
+
+                                        success: false,
+
+                                        message:
+                                            "Could not load images."
+
+                                    });
+
+                                }
+
+
+                                car.images =
+                                    (images || []).map(
+                                        image =>
+                                            image.image_path
+                                    );
+
+
+                                carsWithImages.push(
+                                    car
+                                );
+
+                                completed++;
+
+
+                                if (
+                                    completed ===
+                                    cars.length
+                                ) {
+
+                                    carsWithImages.sort(
+                                        (
+                                            first,
+                                            second
+                                        ) =>
+                                            second.id -
+                                            first.id
+                                    );
+
+
+                                    return res.json({
+
+                                        success: true,
+
+                                        cars:
+                                            carsWithImages
+
+                                    });
+
+                                }
+
+                            }
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+    }
+);
+
+/* =========================================================
+   ADMIN - GET ALL INSPECTION REQUESTS
+========================================================= */
+
+app.get(
+    "/api/admin/requests",
+    adminAuthentication,
+    (req, res) => {
+
+        db.all(
+            `
+            SELECT
+
+                inspection_requests.id,
+
+                inspection_requests.car_id,
+
+                inspection_requests.buyer_name,
+
+                inspection_requests.buyer_phone,
+
+                inspection_requests.created_at,
+
+                cars.brand,
+
+                cars.model,
+
+                cars.year
+
+            FROM inspection_requests
+
+            LEFT JOIN cars
+
+                ON cars.id =
+                   inspection_requests.car_id
+
+            ORDER BY
+                inspection_requests.id DESC
+            `,
+            [],
+            (error, requests) => {
+
+                if (error) {
+
+                    console.error(
+                        "Admin requests error:",
+                        error.message
+                    );
+
+                    return res.status(500).json({
+
+                        success: false,
+
+                        message:
+                            "Could not load requests."
+
+                    });
+
+                }
+
+
+                return res.json({
+
+                    success: true,
+
+                    requests:
+                        requests || []
+
+                });
+
+            }
+        );
+
+    }
+);
+
+/* =========================================================
+   ADMIN - ADD CAR
+========================================================= */
+
+app.post(
+    "/api/admin/cars",
+    adminAuthentication,
     upload.array(
         "images",
         20
@@ -731,70 +1188,106 @@ app.post(
             !car_location
         ) {
 
-            deleteUploadedFiles(
-                req.files
-            );
+            if (
+                req.files &&
+                req.files.length
+            ) {
+
+                req.files.forEach(
+                    file => {
+
+                        try {
+
+                            fs.unlinkSync(
+                                file.path
+                            );
+
+                        }
+                        catch (
+                            cleanupError
+                        ) {
+
+                            console.error(
+                                "Cleanup error:",
+                                cleanupError.message
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+
 
             return res.status(400).json({
 
                 success: false,
 
                 message:
-                    "Please complete all required fields."
+                    "Required fields are missing."
 
             });
 
         }
 
 
-        const carYear =
+        const numericYear =
             Number(year);
 
 
         if (
-            !Number.isInteger(carYear) ||
-            carYear < 1900 ||
-            carYear >
-                new Date().getFullYear() + 2
+            !Number.isInteger(
+                numericYear
+            )
         ) {
 
-            deleteUploadedFiles(
-                req.files
-            );
+            if (
+                req.files &&
+                req.files.length
+            ) {
+
+                req.files.forEach(
+                    file => {
+
+                        try {
+
+                            fs.unlinkSync(
+                                file.path
+                            );
+
+                        }
+                        catch (
+                            cleanupError
+                        ) {
+
+                            console.error(
+                                "Cleanup error:",
+                                cleanupError.message
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+
 
             return res.status(400).json({
 
                 success: false,
 
                 message:
-                    "Please enter a valid car year."
+                    "Invalid year."
 
             });
 
         }
 
 
-        const files =
-            req.files || [];
-
-
-        if (
-            files.length === 0
-        ) {
-
-            return res.status(400).json({
-
-                success: false,
-
-                message:
-                    "Please upload at least one car image."
-
-            });
-
-        }
-
-
-        const sql = `
+        db.run(
+            `
             INSERT INTO cars (
 
                 brand,
@@ -821,93 +1314,115 @@ app.post(
 
                 seller_phone,
 
-                car_location
+                car_location,
+
+                status
 
             )
 
-            VALUES (
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'available')
+            `,
+            [
 
-                ?,
-                ?,
-                ?,
-                ?,
-                ?,
-                ?,
-                ?,
-                ?,
-                ?,
-                ?,
-                ?,
-                ?,
-                ?
+                String(
+                    brand
+                ).trim(),
 
-            )
-        `;
+                String(
+                    model
+                ).trim(),
 
+                numericYear,
 
-        const values = [
+                mileage
+                    ? Number(mileage)
+                    : null,
 
-            brand.trim(),
+                price
+                    ? Number(price)
+                    : null,
 
-            model.trim(),
+                transmission
+                    ? String(transmission).trim()
+                    : null,
 
-            carYear,
+                condition
+                    ? String(condition).trim()
+                    : null,
 
-            mileage
-                ? Number(mileage)
-                : null,
+                traffic_department
+                    ? String(traffic_department).trim()
+                    : null,
 
-            price
-                ? Number(price)
-                : null,
+                license_remaining
+                    ? String(license_remaining).trim()
+                    : null,
 
-            transmission ||
-                null,
+                description
+                    ? String(description).trim()
+                    : null,
 
-            condition ||
-                null,
+                String(
+                    seller_name
+                ).trim(),
 
-            traffic_department ||
-                null,
+                String(
+                    seller_phone
+                ).trim(),
 
-            license_remaining ||
-                null,
+                String(
+                    car_location
+                ).trim()
 
-            description
-                ? description.trim()
-                : null,
-
-            seller_name.trim(),
-
-            seller_phone.trim(),
-
-            car_location.trim()
-
-        ];
-
-
-        db.run(
-            sql,
-            values,
+            ],
             function (error) {
 
                 if (error) {
 
                     console.error(
-                        "Insert car error:",
+                        "Add car error:",
                         error.message
                     );
 
-                    deleteUploadedFiles(
-                        files
-                    );
+
+                    if (
+                        req.files &&
+                        req.files.length
+                    ) {
+
+                        req.files.forEach(
+                            file => {
+
+                                try {
+
+                                    fs.unlinkSync(
+                                        file.path
+                                    );
+
+                                }
+                                catch (
+                                    cleanupError
+                                ) {
+
+                                    console.error(
+                                        "Cleanup error:",
+                                        cleanupError.message
+                                    );
+
+                                }
+
+                            }
+                        );
+
+                    }
+
 
                     return res.status(500).json({
 
                         success: false,
 
                         message:
-                            "Could not save the car."
+                            "Could not add car."
 
                     });
 
@@ -918,11 +1433,101 @@ app.post(
                     this.lastID;
 
 
-                insertImages(
-                    carId,
-                    files,
-                    0,
-                    res
+                if (
+                    !req.files ||
+                    req.files.length === 0
+                ) {
+
+                    return res.status(201).json({
+
+                        success: true,
+
+                        message:
+                            "Car added successfully.",
+
+                        car_id:
+                            carId
+
+                    });
+
+                }
+
+
+                const placeholders =
+                    req.files
+                        .map(
+                            () =>
+                                "(?, ?)"
+                        )
+                        .join(",");
+
+
+                const values = [];
+
+
+                req.files.forEach(
+                    file => {
+
+                        values.push(
+                            carId
+                        );
+
+                        values.push(
+                            "/images/" +
+                            file.filename
+                        );
+
+                    }
+                );
+
+
+                db.run(
+                    `
+                    INSERT INTO car_images (
+
+                        car_id,
+
+                        image_path
+
+                    )
+
+                    VALUES ${placeholders}
+                    `,
+                    values,
+                    function (imageError) {
+
+                        if (imageError) {
+
+                            console.error(
+                                "Add car images error:",
+                                imageError.message
+                            );
+
+                            return res.status(500).json({
+
+                                success: false,
+
+                                message:
+                                    "Car added but images could not be saved."
+
+                            });
+
+                        }
+
+
+                        return res.status(201).json({
+
+                            success: true,
+
+                            message:
+                                "Car added successfully.",
+
+                            car_id:
+                                carId
+
+                        });
+
+                    }
                 );
 
             }
@@ -932,237 +1537,60 @@ app.post(
 );
 
 /* =========================================================
-   INSERT IMAGES
+   ADMIN - UPDATE CAR
 ========================================================= */
 
-function insertImages(
-    carId,
-    files,
-    index,
-    res
-) {
-
-    if (
-        index >=
-        files.length
-    ) {
-
-        return res.json({
-
-            success: true,
-
-            carId:
-                carId,
-
-            imagesCount:
-                files.length,
-
-            message:
-                "Car added successfully."
-
-        });
-
-    }
-
-
-    const file =
-        files[index];
-
-
-    const imagePath =
-        "/images/" +
-        file.filename;
-
-
-    db.run(
-        `
-        INSERT INTO car_images (
-
-            car_id,
-
-            image_path
-
-        )
-
-        VALUES (?, ?)
-        `,
-        [
-            carId,
-
-            imagePath
-
-        ],
-        (error) => {
-
-            if (error) {
-
-                console.error(
-                    "Save image error:",
-                    error.message
-                );
-
-
-                db.run(
-                    `
-                    DELETE FROM cars
-
-                    WHERE id = ?
-                    `,
-                    [carId],
-                    () => {
-
-                        deleteUploadedFiles(
-                            files
-                        );
-
-
-                        if (
-                            !res.headersSent
-                        ) {
-
-                            return res.status(500).json({
-
-                                success: false,
-
-                                message:
-                                    "Could not save car images."
-
-                            });
-
-                        }
-
-                    }
-                );
-
-                return;
-
-            }
-
-
-            insertImages(
-                carId,
-                files,
-                index + 1,
-                res
-            );
-
-        }
-    );
-
-}
-
-/* =========================================================
-   DELETE UPLOADED FILES
-========================================================= */
-
-function deleteUploadedFiles(
-    files
-) {
-
-    if (
-        !files ||
-        files.length === 0
-    ) {
-
-        return;
-
-    }
-
-
-    files.forEach(
-        file => {
-
-            if (
-                !file ||
-                !file.filename
-            ) {
-
-                return;
-
-            }
-
-
-            const filePath =
-                path.join(
-                    imagesFolder,
-                    file.filename
-                );
-
-
-            if (
-                fs.existsSync(
-                    filePath
-                )
-            ) {
-
-                try {
-
-                    fs.unlinkSync(
-                        filePath
-                    );
-
-                }
-                catch (error) {
-
-                    console.error(
-                        "Delete uploaded file error:",
-                        error.message
-                    );
-
-                }
-
-            }
-
-        }
-    );
-
-}
-
-/* =========================================================
-   INSPECTION REQUEST
-========================================================= */
-
-app.post(
-    "/api/inspection",
+app.put(
+    "/api/admin/cars/:id",
+    adminAuthentication,
+    upload.array(
+        "images",
+        20
+    ),
     (req, res) => {
 
-        const {
-
-            car_id,
-
-            buyer_name,
-
-            buyer_phone
-
-        } = req.body;
-
-
-        if (
-            !car_id ||
-            !buyer_name ||
-            !buyer_phone
-        ) {
-
-            return res.status(400).json({
-
-                success: false,
-
-                message:
-                    "Please complete all fields."
-
-            });
-
-        }
-
-
         const carId =
-            Number(car_id);
+            Number(
+                req.params.id
+            );
 
 
         if (
             !Number.isInteger(carId) ||
             carId <= 0
         ) {
+
+            if (
+                req.files &&
+                req.files.length
+            ) {
+
+                req.files.forEach(
+                    file => {
+
+                        try {
+
+                            fs.unlinkSync(
+                                file.path
+                            );
+
+                        }
+                        catch (
+                            cleanupError
+                        ) {
+
+                            console.error(
+                                "Cleanup error:",
+                                cleanupError.message
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+
 
             return res.status(400).json({
 
@@ -1176,35 +1604,209 @@ app.post(
         }
 
 
+        const {
+
+            brand,
+
+            model,
+
+            year,
+
+            mileage,
+
+            price,
+
+            transmission,
+
+            condition,
+
+            traffic_department,
+
+            license_remaining,
+
+            description,
+
+            seller_name,
+
+            seller_phone,
+
+            car_location,
+
+            status
+
+        } = req.body;
+
+
+        if (
+            !brand ||
+            !model ||
+            !year ||
+            !seller_name ||
+            !seller_phone ||
+            !car_location
+        ) {
+
+            if (
+                req.files &&
+                req.files.length
+            ) {
+
+                req.files.forEach(
+                    file => {
+
+                        try {
+
+                            fs.unlinkSync(
+                                file.path
+                            );
+
+                        }
+                        catch (
+                            cleanupError
+                        ) {
+
+                            console.error(
+                                "Cleanup error:",
+                                cleanupError.message
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+
+
+            return res.status(400).json({
+
+                success: false,
+
+                message:
+                    "Required fields are missing."
+
+            });
+
+        }
+
+
+        const numericYear =
+            Number(year);
+
+
+        if (
+            !Number.isInteger(
+                numericYear
+            )
+        ) {
+
+            if (
+                req.files &&
+                req.files.length
+            ) {
+
+                req.files.forEach(
+                    file => {
+
+                        try {
+
+                            fs.unlinkSync(
+                                file.path
+                            );
+
+                        }
+                        catch (
+                            cleanupError
+                        ) {
+
+                            console.error(
+                                "Cleanup error:",
+                                cleanupError.message
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+
+
+            return res.status(400).json({
+
+                success: false,
+
+                message:
+                    "Invalid year."
+
+            });
+
+        }
+
+
         db.get(
             `
-            SELECT id
+            SELECT *
 
             FROM cars
 
             WHERE id = ?
             `,
             [carId],
-            (
-                carError,
-                car
-            ) => {
+            (findError, existingCar) => {
 
-                if (carError) {
+                if (findError) {
+
+                    console.error(
+                        "Find car error:",
+                        findError.message
+                    );
 
                     return res.status(500).json({
 
                         success: false,
 
                         message:
-                            "Database error."
+                            "Could not load car."
 
                     });
 
                 }
 
 
-                if (!car) {
+                if (!existingCar) {
+
+                    if (
+                        req.files &&
+                        req.files.length
+                    ) {
+
+                        req.files.forEach(
+                            file => {
+
+                                try {
+
+                                    fs.unlinkSync(
+                                        file.path
+                                    );
+
+                                }
+                                catch (
+                                    cleanupError
+                                ) {
+
+                                    console.error(
+                                        "Cleanup error:",
+                                        cleanupError.message
+                                    );
+
+                                }
+
+                            }
+                        );
+
+                    }
+
 
                     return res.status(404).json({
 
@@ -1220,25 +1822,97 @@ app.post(
 
                 db.run(
                     `
-                    INSERT INTO inspection_requests (
+                    UPDATE cars
 
-                        car_id,
+                    SET
 
-                        buyer_name,
+                        brand = ?,
 
-                        buyer_phone
+                        model = ?,
 
-                    )
+                        year = ?,
 
-                    VALUES (?, ?, ?)
+                        mileage = ?,
+
+                        price = ?,
+
+                        transmission = ?,
+
+                        condition = ?,
+
+                        traffic_department = ?,
+
+                        license_remaining = ?,
+
+                        description = ?,
+
+                        seller_name = ?,
+
+                        seller_phone = ?,
+
+                        car_location = ?,
+
+                        status = ?
+
+                    WHERE id = ?
                     `,
                     [
 
-                        carId,
+                        String(
+                            brand
+                        ).trim(),
 
-                        buyer_name.trim(),
+                        String(
+                            model
+                        ).trim(),
 
-                        buyer_phone.trim()
+                        numericYear,
+
+                        mileage
+                            ? Number(mileage)
+                            : null,
+
+                        price
+                            ? Number(price)
+                            : null,
+
+                        transmission
+                            ? String(transmission).trim()
+                            : null,
+
+                        condition
+                            ? String(condition).trim()
+                            : null,
+
+                        traffic_department
+                            ? String(traffic_department).trim()
+                            : null,
+
+                        license_remaining
+                            ? String(license_remaining).trim()
+                            : null,
+
+                        description
+                            ? String(description).trim()
+                            : null,
+
+                        String(
+                            seller_name
+                        ).trim(),
+
+                        String(
+                            seller_phone
+                        ).trim(),
+
+                        String(
+                            car_location
+                        ).trim(),
+
+                        status
+                            ? String(status).trim()
+                            : "available",
+
+                        carId
 
                     ],
                     function (error) {
@@ -1246,184 +1920,122 @@ app.post(
                         if (error) {
 
                             console.error(
-                                "Inspection request error:",
+                                "Update car error:",
                                 error.message
                             );
+
+                            if (
+                                req.files &&
+                                req.files.length
+                            ) {
+
+                                req.files.forEach(
+                                    file => {
+
+                                        try {
+
+                                            fs.unlinkSync(
+                                                file.path
+                                            );
+
+                                        }
+                                        catch (
+                                            cleanupError
+                                        ) {
+
+                                            console.error(
+                                                "Cleanup error:",
+                                                cleanupError.message
+                                            );
+
+                                        }
+
+                                    }
+                                );
+
+                            }
+
 
                             return res.status(500).json({
 
                                 success: false,
 
                                 message:
-                                    "Could not send request."
+                                    "Could not update car."
 
                             });
 
                         }
 
 
-                        return res.json({
+                        if (
+                            !req.files ||
+                            req.files.length === 0
+                        ) {
 
-                            success: true,
+                            return res.json({
 
-                            requestId:
-                                this.lastID,
+                                success: true,
 
-                            message:
-                                "Inspection request sent."
+                                message:
+                                    "Car updated successfully."
 
-                        });
+                            });
 
-                    }
-                );
-
-            }
-        );
-
-    }
-);
-
-/* =========================================================
-   ADMIN AUTHENTICATION
-========================================================= */
-
-function adminAuthentication(
-    req,
-    res,
-    next
-) {
-
-    const password =
-        req.headers[
-            "x-admin-password"
-        ];
+                        }
 
 
-    if (!password) {
-
-        return res.status(401).json({
-
-            success: false,
-
-            message:
-                "Admin password required."
-
-        });
-
-    }
+                        const placeholders =
+                            req.files
+                                .map(
+                                    () =>
+                                        "(?, ?)"
+                                )
+                                .join(",");
 
 
-    if (
-        password !==
-        "Zizo@2026"
-    ) {
-
-        return res.status(401).json({
-
-            success: false,
-
-            message:
-                "Wrong admin password."
-
-        });
-
-    }
+                        const values = [];
 
 
-    next();
+                        req.files.forEach(
+                            file => {
 
-}
+                                values.push(
+                                    carId
+                                );
 
-/* =========================================================
-   ADMIN - ALL CARS
-========================================================= */
+                                values.push(
+                                    "/images/" +
+                                    file.filename
+                                );
 
-app.get(
-    "/api/admin/cars",
-    adminAuthentication,
-    (req, res) => {
-
-        db.all(
-            `
-            SELECT *
-
-            FROM cars
-
-            ORDER BY id DESC
-            `,
-            [],
-            (
-                error,
-                cars
-            ) => {
-
-                if (error) {
-
-                    console.error(
-                        "Admin cars error:",
-                        error.message
-                    );
-
-                    return res.status(500).json({
-
-                        success: false,
-
-                        message:
-                            "Could not load admin cars."
-
-                    });
-
-                }
+                            }
+                        );
 
 
-                if (
-                    !cars ||
-                    cars.length === 0
-                ) {
-
-                    return res.json({
-
-                        success: true,
-
-                        cars: []
-
-                    });
-
-                }
-
-
-                let completed = 0;
-
-                const result = [];
-
-
-                cars.forEach(
-                    car => {
-
-                        db.all(
+                        db.run(
                             `
-                            SELECT
+                            INSERT INTO car_images (
 
-                                id,
+                                car_id,
 
                                 image_path
 
-                            FROM car_images
+                            )
 
-                            WHERE car_id = ?
-
-                            ORDER BY id ASC
+                            VALUES ${placeholders}
                             `,
-                            [car.id],
-                            (
-                                imageError,
-                                images
-                            ) => {
+                            values,
+                            function (
+                                imageError
+                            ) {
 
-                                if (imageError) {
+                                if (
+                                    imageError
+                                ) {
 
                                     console.error(
-                                        "Admin images error:",
+                                        "Update images error:",
                                         imageError.message
                                     );
 
@@ -1432,155 +2044,27 @@ app.get(
                                         success: false,
 
                                         message:
-                                            "Could not load admin images."
+                                            "Car updated but images could not be saved."
 
                                     });
 
                                 }
 
 
-                                car.images =
-                                    (
-                                        images ||
-                                        []
-                                    ).map(
-                                        image => ({
+                                return res.json({
 
-                                            id:
-                                                image.id,
+                                    success: true,
 
-                                            image_path:
-                                                image.image_path
+                                    message:
+                                        "Car updated successfully."
 
-                                        })
-                                    );
-
-
-                                car.main_image =
-                                    car.images.length > 0
-                                        ? car.images[0].image_path
-                                        : null;
-
-
-                                result.push(
-                                    car
-                                );
-
-                                completed++;
-
-
-                                if (
-                                    completed ===
-                                    cars.length
-                                ) {
-
-                                    result.sort(
-                                        (a, b) =>
-                                            b.id - a.id
-                                    );
-
-
-                                    return res.json({
-
-                                        success: true,
-
-                                        cars:
-                                            result
-
-                                    });
-
-                                }
+                                });
 
                             }
                         );
 
                     }
                 );
-
-            }
-        );
-
-    }
-);
-
-/* =========================================================
-   ADMIN - INSPECTION REQUESTS
-========================================================= */
-
-app.get(
-    "/api/admin/requests",
-    adminAuthentication,
-    (req, res) => {
-
-        db.all(
-            `
-            SELECT
-
-                inspection_requests.id,
-
-                inspection_requests.car_id,
-
-                inspection_requests.buyer_name,
-
-                inspection_requests.buyer_phone,
-
-                inspection_requests.created_at,
-
-                cars.brand,
-
-                cars.model,
-
-                cars.year,
-
-                cars.seller_name,
-
-                cars.seller_phone,
-
-                cars.car_location
-
-            FROM inspection_requests
-
-            LEFT JOIN cars
-
-            ON inspection_requests.car_id =
-               cars.id
-
-            ORDER BY
-                inspection_requests.id DESC
-            `,
-            [],
-            (
-                error,
-                requests
-            ) => {
-
-                if (error) {
-
-                    console.error(
-                        "Load requests error:",
-                        error.message
-                    );
-
-                    return res.status(500).json({
-
-                        success: false,
-
-                        message:
-                            "Could not load requests."
-
-                    });
-
-                }
-
-
-                return res.json({
-
-                    success: true,
-
-                    requests:
-                        requests || []
-
-                });
 
             }
         );
@@ -1622,22 +2106,21 @@ app.delete(
 
         db.all(
             `
-            SELECT image_path
+            SELECT
+
+                image_path
 
             FROM car_images
 
             WHERE car_id = ?
             `,
             [carId],
-            (
-                imageError,
-                images
-            ) => {
+            (imageError, images) => {
 
                 if (imageError) {
 
                     console.error(
-                        "Load delete images error:",
+                        "Delete images lookup error:",
                         imageError.message
                     );
 
@@ -1646,42 +2129,44 @@ app.delete(
                         success: false,
 
                         message:
-                            "Could not load images."
+                            "Could not load car images."
 
                     });
 
                 }
 
 
-                db.get(
+                db.run(
                     `
-                    SELECT id
-
-                    FROM cars
+                    DELETE FROM cars
 
                     WHERE id = ?
                     `,
                     [carId],
-                    (
-                        carError,
-                        car
-                    ) => {
+                    function (error) {
 
-                        if (carError) {
+                        if (error) {
+
+                            console.error(
+                                "Delete car error:",
+                                error.message
+                            );
 
                             return res.status(500).json({
 
                                 success: false,
 
                                 message:
-                                    "Database error."
+                                    "Could not delete car."
 
                             });
 
                         }
 
 
-                        if (!car) {
+                        if (
+                            this.changes === 0
+                        ) {
 
                             return res.status(404).json({
 
@@ -1695,107 +2180,60 @@ app.delete(
                         }
 
 
-                        db.run(
-                            `
-                            DELETE FROM cars
+                        (images || []).forEach(
+                            image => {
 
-                            WHERE id = ?
-                            `,
-                            [carId],
-                            function (
-                                deleteError
-                            ) {
-
-                                if (
-                                    deleteError
-                                ) {
-
-                                    console.error(
-                                        "Delete car error:",
-                                        deleteError.message
+                                const filename =
+                                    path.basename(
+                                        image.image_path
                                     );
 
-                                    return res.status(500).json({
 
-                                        success: false,
+                                const fullPath =
+                                    path.join(
+                                        imagesFolder,
+                                        filename
+                                    );
 
-                                        message:
-                                            "Could not delete the car."
 
-                                    });
+                                if (
+                                    fs.existsSync(
+                                        fullPath
+                                    )
+                                ) {
+
+                                    try {
+
+                                        fs.unlinkSync(
+                                            fullPath
+                                        );
+
+                                    }
+                                    catch (
+                                        deleteImageError
+                                    ) {
+
+                                        console.error(
+                                            "Image delete error:",
+                                            deleteImageError.message
+                                        );
+
+                                    }
 
                                 }
 
-
-                                (
-                                    images ||
-                                    []
-                                ).forEach(
-                                    image => {
-
-                                        if (
-                                            !image.image_path
-                                        ) {
-
-                                            return;
-
-                                        }
-
-
-                                        const filename =
-                                            path.basename(
-                                                image.image_path
-                                            );
-
-
-                                        const fullPath =
-                                            path.join(
-                                                imagesFolder,
-                                                filename
-                                            );
-
-
-                                        if (
-                                            fs.existsSync(
-                                                fullPath
-                                            )
-                                        ) {
-
-                                            try {
-
-                                                fs.unlinkSync(
-                                                    fullPath
-                                                );
-
-                                            }
-                                            catch (
-                                                deleteImageError
-                                            ) {
-
-                                                console.error(
-                                                    "Image delete error:",
-                                                    deleteImageError.message
-                                                );
-
-                                            }
-
-                                        }
-
-                                    }
-                                );
-
-
-                                return res.json({
-
-                                    success: true,
-
-                                    message:
-                                        "Car and all images deleted successfully."
-
-                                });
-
                             }
                         );
+
+
+                        return res.json({
+
+                            success: true,
+
+                            message:
+                                "Car and all images deleted successfully."
+
+                        });
 
                     }
                 );
@@ -1894,6 +2332,181 @@ app.delete(
             }
         );
 
+    }
+);
+
+/* =========================================================
+   CUSTOMER AUTHENTICATION
+========================================================= */
+
+function hashCustomerPassword(password) {
+    return crypto
+        .createHash("sha256")
+        .update(password, "utf8")
+        .digest("hex");
+}
+
+/* CUSTOMER - REGISTER */
+app.post(
+    "/api/customer/register",
+    (req, res) => {
+
+        const {
+            name,
+            phone,
+            password
+        } = req.body;
+
+        if (
+            !name ||
+            !phone ||
+            !password
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Please complete all fields."
+            });
+        }
+
+        const cleanName = String(name).trim();
+        const cleanPhone = String(phone).trim();
+        const cleanPassword = String(password);
+
+        if (
+            cleanName.length < 2 ||
+            cleanPhone.length < 6 ||
+            cleanPassword.length < 6
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Name, phone and password are invalid."
+            });
+        }
+
+        const passwordHash =
+            hashCustomerPassword(cleanPassword);
+
+        db.run(
+            `
+                INSERT INTO customers (
+                    name,
+                    phone,
+                    password
+                )
+                VALUES (?, ?, ?)
+            `,
+            [
+                cleanName,
+                cleanPhone,
+                passwordHash
+            ],
+            function (error) {
+
+                if (error) {
+
+                    console.error(
+                        "Customer register error:",
+                        error.message
+                    );
+
+                    if (
+                        error.message.includes(
+                            "UNIQUE constraint failed"
+                        )
+                    ) {
+                        return res.status(409).json({
+                            success: false,
+                            message: "This phone number is already registered."
+                        });
+                    }
+
+                    return res.status(500).json({
+                        success: false,
+                        message: "Could not create customer account."
+                    });
+                }
+
+                return res.status(201).json({
+                    success: true,
+                    customer: {
+                        id: this.lastID,
+                        name: cleanName,
+                        phone: cleanPhone
+                    },
+                    message: "Account created successfully."
+                });
+            }
+        );
+    }
+);
+
+/* CUSTOMER - LOGIN */
+app.post(
+    "/api/customer/login",
+    (req, res) => {
+
+        const {
+            phone,
+            password
+        } = req.body;
+
+        if (
+            !phone ||
+            !password
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Phone and password are required."
+            });
+        }
+
+        const cleanPhone = String(phone).trim();
+        const passwordHash =
+            hashCustomerPassword(String(password));
+
+        db.get(
+            `
+                SELECT
+                    id,
+                    name,
+                    phone
+                FROM customers
+                WHERE phone = ?
+                  AND password = ?
+            `,
+            [
+                cleanPhone,
+                passwordHash
+            ],
+            (error, customer) => {
+
+                if (error) {
+
+                    console.error(
+                        "Customer login error:",
+                        error.message
+                    );
+
+                    return res.status(500).json({
+                        success: false,
+                        message: "Database error."
+                    });
+                }
+
+                if (!customer) {
+                    return res.status(401).json({
+                        success: false,
+                        message: "Invalid phone number or password."
+                    });
+                }
+
+                return res.json({
+                    success: true,
+                    customer: customer,
+                    message: "Login successful."
+                });
+            }
+        );
     }
 );
 
