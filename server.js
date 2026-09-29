@@ -194,6 +194,8 @@ db.serialize(() => {
 
             buyer_phone TEXT NOT NULL,
 
+            status TEXT NOT NULL DEFAULT 'new',
+
             created_at DATETIME
                 DEFAULT CURRENT_TIMESTAMP,
 
@@ -203,6 +205,60 @@ db.serialize(() => {
 
         )
     `);
+
+    /* =====================================================
+       MIGRATE OLD INSPECTION REQUESTS
+       Adds status to existing databases without deleting data.
+    ===================================================== */
+
+    db.all(
+        "PRAGMA table_info(inspection_requests)",
+        (tableError, columns) => {
+
+            if (tableError) {
+
+                console.error(
+                    "Inspection requests schema check error:",
+                    tableError.message
+                );
+
+                return;
+
+            }
+
+            const hasStatus =
+                (columns || []).some(
+                    column => column.name === "status"
+                );
+
+            if (!hasStatus) {
+
+                db.run(
+                    "ALTER TABLE inspection_requests ADD COLUMN status TEXT NOT NULL DEFAULT 'new'",
+                    (alterError) => {
+
+                        if (alterError) {
+
+                            console.error(
+                                "Inspection requests migration error:",
+                                alterError.message
+                            );
+
+                        } else {
+
+                            console.log(
+                                "Inspection requests status column added."
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+
+        }
+    );
 
     db.run(`
         CREATE TABLE IF NOT EXISTS customers (
@@ -1080,13 +1136,21 @@ app.get(
 
                 inspection_requests.buyer_phone,
 
+                inspection_requests.status,
+
                 inspection_requests.created_at,
 
                 cars.brand,
 
                 cars.model,
 
-                cars.year
+                cars.year,
+
+                cars.seller_name,
+
+                cars.seller_phone,
+
+                cars.car_location
 
             FROM inspection_requests
 
@@ -2243,6 +2307,132 @@ app.delete(
 
     }
 );
+
+/* =========================================================
+   ADMIN - UPDATE INSPECTION REQUEST STATUS
+========================================================= */
+
+app.put(
+    "/api/admin/requests/:id/status",
+    adminAuthentication,
+    (req, res) => {
+
+        const requestId =
+            Number(
+                req.params.id
+            );
+
+        if (
+            !Number.isInteger(requestId) ||
+            requestId <= 0
+        ) {
+
+            return res.status(400).json({
+
+                success: false,
+
+                message:
+                    "Invalid request ID."
+
+            });
+
+        }
+
+        const allowedStatuses = [
+            "new",
+            "contacted",
+            "completed"
+        ];
+
+        const status =
+            String(
+                req.body.status || ""
+            )
+            .trim()
+            .toLowerCase();
+
+        if (
+            !allowedStatuses.includes(
+                status
+            )
+        ) {
+
+            return res.status(400).json({
+
+                success: false,
+
+                message:
+                    "Invalid request status."
+
+            });
+
+        }
+
+        db.run(
+            `
+            UPDATE inspection_requests
+
+            SET status = ?
+
+            WHERE id = ?
+            `,
+            [
+                status,
+                requestId
+            ],
+            function (error) {
+
+                if (error) {
+
+                    console.error(
+                        "Update request status error:",
+                        error.message
+                    );
+
+                    return res.status(500).json({
+
+                        success: false,
+
+                        message:
+                            "Could not update request status."
+
+                    });
+
+                }
+
+                if (
+                    this.changes === 0
+                ) {
+
+                    return res.status(404).json({
+
+                        success: false,
+
+                        message:
+                            "Request not found."
+
+                    });
+
+                }
+
+                return res.json({
+
+                    success: true,
+
+                    message:
+                        "Request status updated successfully.",
+
+                    status:
+                        status
+
+                });
+
+            }
+        );
+
+    }
+);
+
 
 /* =========================================================
    ADMIN - DELETE INSPECTION REQUEST
