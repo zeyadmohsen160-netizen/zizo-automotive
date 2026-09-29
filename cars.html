@@ -21,6 +21,8 @@
 
         .cars-search-box {
 
+            display: none;
+
             background: #fff;
 
             border-radius: 14px;
@@ -860,6 +862,12 @@ function renderCars(
 ) {
 
     carsContainer.innerHTML = "";
+
+    const searchBox = document.querySelector(".cars-search-box");
+
+    if (searchBox) {
+        searchBox.style.display = allCars.length >= 3 ? "block" : "none";
+    }
 
 
     /*
