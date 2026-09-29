@@ -2748,8 +2748,7 @@ app.use(
                 success: false,
 
                 message:
-                    "Image upload error: " +
-                    error.message
+                    "Something went wrong. Please try again."
 
             });
 
@@ -2758,12 +2757,12 @@ app.use(
 
         if (error) {
 
-            return res.status(400).json({
+            return res.status(500).json({
 
                 success: false,
 
                 message:
-                    error.message
+                    "Something went wrong. Please try again."
 
             });
 
