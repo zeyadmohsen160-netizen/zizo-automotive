@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,10 +25,6 @@
             color: #ffffff;
             min-height: 100vh;
         }
-
-        /* =========================
-           HEADER
-        ========================= */
 
         header {
             background: #111111;
@@ -67,10 +62,6 @@
             background: #d4af37;
             color: #000;
         }
-
-        /* =========================
-           LOGIN
-        ========================= */
 
         #loginSection {
             min-height: 100vh;
@@ -115,7 +106,9 @@
             color: #ccc;
         }
 
-        .input-group input {
+        .input-group input,
+        .input-group select,
+        .input-group textarea {
             width: 100%;
             padding: 13px;
             border-radius: 6px;
@@ -125,7 +118,14 @@
             outline: none;
         }
 
-        .input-group input:focus {
+        .input-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus,
+        .input-group textarea:focus {
             border-color: #d4af37;
         }
 
@@ -152,10 +152,6 @@
             display: none;
         }
 
-        /* =========================
-           ADMIN
-        ========================= */
-
         #adminSection {
             display: none;
         }
@@ -178,10 +174,6 @@
         .page-title p {
             color: #888;
         }
-
-        /* =========================
-           STATS
-        ========================= */
 
         .stats {
             display: grid;
@@ -208,10 +200,6 @@
             color: #d4af37;
         }
 
-        /* =========================
-           SECTION
-        ========================= */
-
         .section {
             background: #111;
             border: 1px solid #292929;
@@ -225,13 +213,21 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+            gap: 15px;
         }
 
         .section-header h2 {
             font-size: 22px;
         }
 
-        .refresh-btn {
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .refresh-btn,
+        .filter-btn {
             background: transparent;
             color: #d4af37;
             border: 1px solid #d4af37;
@@ -240,14 +236,39 @@
             cursor: pointer;
         }
 
-        .refresh-btn:hover {
+        .refresh-btn:hover,
+        .filter-btn:hover,
+        .filter-btn.active {
             background: #d4af37;
             color: #000;
         }
 
-        /* =========================
-           CARS GRID
-        ========================= */
+        .cars-toolbar {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 13px 15px;
+            border-radius: 7px;
+            border: 1px solid #333;
+            background: #0d0d0d;
+            color: #fff;
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: #d4af37;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
 
         .cars-grid {
             display: grid;
@@ -301,30 +322,82 @@
             line-height: 1.8;
         }
 
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+
+        .status-available {
+            background: rgba(50, 180, 90, .15);
+            color: #55d982;
+            border: 1px solid rgba(50, 180, 90, .4);
+        }
+
+        .status-sold {
+            background: rgba(220, 70, 70, .15);
+            color: #ff6b6b;
+            border: 1px solid rgba(220, 70, 70, .4);
+        }
+
         .car-actions {
-            display: flex;
-            gap: 10px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
             margin-top: 18px;
         }
 
-        .delete-btn {
-            width: 100%;
-            background: #8f1d1d;
+        .action-btn {
             border: none;
             color: white;
-            padding: 11px;
+            padding: 10px;
             border-radius: 6px;
             cursor: pointer;
             font-weight: bold;
+        }
+
+        .edit-btn {
+            background: #555;
+        }
+
+        .edit-btn:hover {
+            background: #707070;
+        }
+
+        .sold-btn {
+            background: #8f1d1d;
+        }
+
+        .sold-btn:hover {
+            background: #b52525;
+        }
+
+        .available-btn {
+            background: #1c7040;
+        }
+
+        .available-btn:hover {
+            background: #258c50;
+        }
+
+        .delete-btn {
+            background: #8f1d1d;
         }
 
         .delete-btn:hover {
             background: #b52525;
         }
 
-        /* =========================
-           REQUESTS TABLE
-        ========================= */
+        .whatsapp-btn {
+            background: #176b3a;
+        }
+
+        .whatsapp-btn:hover {
+            background: #218c4c;
+        }
 
         .table-wrapper {
             overflow-x: auto;
@@ -333,7 +406,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 900px;
+            min-width: 1000px;
         }
 
         th,
@@ -353,6 +426,29 @@
             font-size: 14px;
         }
 
+        .request-status {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .request-new {
+            color: #d4af37;
+            border: 1px solid #d4af37;
+        }
+
+        .request-contacted {
+            color: #65b7ff;
+            border: 1px solid #65b7ff;
+        }
+
+        .request-completed {
+            color: #55d982;
+            border: 1px solid #55d982;
+        }
+
         .small-delete {
             background: #8f1d1d;
             color: white;
@@ -366,29 +462,17 @@
             background: #b52525;
         }
 
-        /* =========================
-           EMPTY
-        ========================= */
-
         .empty {
             text-align: center;
             padding: 50px 20px;
             color: #777;
         }
 
-        /* =========================
-           LOADING
-        ========================= */
-
         .loading {
             text-align: center;
             padding: 40px;
             color: #aaa;
         }
-
-        /* =========================
-           TOAST
-        ========================= */
 
         #toast {
             position: fixed;
@@ -405,8 +489,87 @@
         }
 
         /* =========================
-           MOBILE
+           MODAL
         ========================= */
+
+        #editModal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.78);
+            z-index: 5000;
+            overflow-y: auto;
+            padding: 30px 15px;
+        }
+
+        .modal-box {
+            width: 100%;
+            max-width: 850px;
+            margin: 30px auto;
+            background: #151515;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 25px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-header h2 {
+            color: #d4af37;
+        }
+
+        .close-modal {
+            background: transparent;
+            border: none;
+            color: #aaa;
+            font-size: 28px;
+            cursor: pointer;
+        }
+
+        .close-modal:hover {
+            color: #fff;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .form-full {
+            grid-column: 1 / -1;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .cancel-btn {
+            background: #333;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .save-btn {
+            background: #d4af37;
+            color: #000;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
 
         @media (max-width: 1000px) {
 
@@ -416,6 +579,22 @@
 
             .stats {
                 grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 700px) {
+
+            .cars-toolbar {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-full {
+                grid-column: auto;
             }
 
         }
@@ -450,6 +629,10 @@
                 font-size: 25px;
             }
 
+            .car-actions {
+                grid-template-columns: 1fr;
+            }
+
         }
 
     </style>
@@ -457,11 +640,6 @@
 </head>
 
 <body>
-
-
-<!-- =====================================================
-     LOGIN
-===================================================== -->
 
 <section id="loginSection">
 
@@ -509,10 +687,6 @@
 </section>
 
 
-<!-- =====================================================
-     ADMIN DASHBOARD
-===================================================== -->
-
 <section id="adminSection">
 
     <header>
@@ -533,11 +707,6 @@
 
     <main class="container">
 
-
-        <!-- =========================
-             TITLE
-        ========================= -->
-
         <div class="page-title">
 
             <h1>
@@ -550,10 +719,6 @@
 
         </div>
 
-
-        <!-- =========================
-             STATS
-        ========================= -->
 
         <div class="stats">
 
@@ -569,7 +734,6 @@
 
             </div>
 
-
             <div class="stat-card">
 
                 <h3>
@@ -581,7 +745,6 @@
                 </strong>
 
             </div>
-
 
             <div class="stat-card">
 
@@ -598,10 +761,6 @@
         </div>
 
 
-        <!-- =================================================
-             CARS
-        ================================================= -->
-
         <section class="section">
 
             <div class="section-header">
@@ -610,12 +769,57 @@
                     Cars
                 </h2>
 
-                <button
-                    class="refresh-btn"
-                    onclick="loadCars()"
+                <div class="header-actions">
+
+                    <button
+                        class="refresh-btn"
+                        onclick="loadCars()"
+                    >
+                        Refresh
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="cars-toolbar">
+
+                <input
+                    type="text"
+                    id="carSearch"
+                    class="search-input"
+                    placeholder="Search by brand, model, year, seller or phone..."
+                    oninput="applyCarFilters()"
                 >
-                    Refresh
-                </button>
+
+                <div class="filter-group">
+
+                    <button
+                        class="filter-btn active"
+                        id="filterAll"
+                        onclick="setCarFilter('all')"
+                    >
+                        All
+                    </button>
+
+                    <button
+                        class="filter-btn"
+                        id="filterAvailable"
+                        onclick="setCarFilter('available')"
+                    >
+                        Available
+                    </button>
+
+                    <button
+                        class="filter-btn"
+                        id="filterSold"
+                        onclick="setCarFilter('sold')"
+                    >
+                        Sold
+                    </button>
+
+                </div>
 
             </div>
 
@@ -633,10 +837,6 @@
 
         </section>
 
-
-        <!-- =================================================
-             INSPECTION REQUESTS
-        ================================================= -->
 
         <section class="section">
 
@@ -664,50 +864,26 @@
 
                         <tr>
 
-                            <th>
-                                ID
-                            </th>
-
-                            <th>
-                                Buyer
-                            </th>
-
-                            <th>
-                                Phone
-                            </th>
-
-                            <th>
-                                Car
-                            </th>
-
-                            <th>
-                                Seller
-                            </th>
-
-                            <th>
-                                Location
-                            </th>
-
-                            <th>
-                                Date
-                            </th>
-
-                            <th>
-                                Action
-                            </th>
+                            <th>ID</th>
+                            <th>Buyer</th>
+                            <th>Phone</th>
+                            <th>Car</th>
+                            <th>Seller</th>
+                            <th>Location</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Action</th>
 
                         </tr>
 
                     </thead>
 
-                    <tbody
-                        id="requestsTable"
-                    >
+                    <tbody id="requestsTable">
 
                         <tr>
 
                             <td
-                                colspan="8"
+                                colspan="9"
                                 class="empty"
                             >
                                 Loading requests...
@@ -723,41 +899,306 @@
 
         </section>
 
-
     </main>
 
 </section>
 
 
-<!-- =====================================================
-     TOAST
-===================================================== -->
+<!-- EDIT MODAL -->
+
+<div id="editModal">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <h2>
+                Edit Car
+            </h2>
+
+            <button
+                class="close-modal"
+                onclick="closeEditModal()"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <input
+            type="hidden"
+            id="editId"
+        >
+
+
+        <div class="form-grid">
+
+            <div class="input-group">
+
+                <label>
+                    Brand
+                </label>
+
+                <input
+                    id="editBrand"
+                    type="text"
+                >
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label>
+                    Model
+                </label>
+
+                <input
+                    id="editModel"
+                    type="text"
+                >
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label>
+                    Year
+                </label>
+
+                <input
+                    id="editYear"
+                    type="number"
+                >
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label>
+                    Mileage
+                </label>
+
+                <input
+                    id="editMileage"
+                    type="number"
+                >
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label>
+                    Price
+                </label>
+
+                <input
+                    id="editPrice"
+                    type="number"
+                >
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label>
+                    Transmission
+                </label>
+
+                <select id="editTransmission">
+
+                    <option value="">
+                        Select
+                    </option>
+
+                    <option value="Automatic">
+                        Automatic
+                    </option>
+
+                    <option value="Manual">
+                        Manual
+                    </option>
+
+                    <option value="CVT">
+                        CVT
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label>
+                    Condition
+                </label>
+
+                <input
+                    id="editCondition"
+                    type="text"
+                >
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label>
+                    Traffic Department
+                </label>
+
+                <input
+                    id="editTraffic"
+                    type="text"
+                >
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label>
+                    License Remaining
+                </label>
+
+                <input
+                    id="editLicense"
+                    type="text"
+                >
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label>
+                    Status
+                </label>
+
+                <select id="editStatus">
+
+                    <option value="available">
+                        Available
+                    </option>
+
+                    <option value="sold">
+                        Sold
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label>
+                    Seller Name
+                </label>
+
+                <input
+                    id="editSellerName"
+                    type="text"
+                >
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label>
+                    Seller Phone
+                </label>
+
+                <input
+                    id="editSellerPhone"
+                    type="text"
+                >
+
+            </div>
+
+
+            <div class="input-group form-full">
+
+                <label>
+                    Car Location
+                </label>
+
+                <input
+                    id="editLocation"
+                    type="text"
+                >
+
+            </div>
+
+
+            <div class="input-group form-full">
+
+                <label>
+                    Description
+                </label>
+
+                <textarea
+                    id="editDescription"
+                ></textarea>
+
+            </div>
+
+        </div>
+
+
+        <div class="modal-actions">
+
+            <button
+                class="cancel-btn"
+                onclick="closeEditModal()"
+            >
+                Cancel
+            </button>
+
+            <button
+                class="save-btn"
+                onclick="saveCar()"
+            >
+                Save Changes
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
 
 <div id="toast"></div>
 
 
 <script>
 
-    /* =====================================================
-       VARIABLES
-    ===================================================== */
-
     let adminPassword = "";
 
+    let allCars = [];
+
+    let currentCarFilter = "all";
 
 
-    /* =====================================================
+    /* =========================
        LOGIN
-    ===================================================== */
+    ========================= */
 
-    function login() {
+    async function login() {
 
         const password =
             document
                 .getElementById("password")
                 .value
                 .trim();
-
 
         if (!password) {
 
@@ -769,106 +1210,76 @@
 
         }
 
+        try {
 
-        /*
-         * نجرب طلب حقيقي للـ API
-         * بدل ما نعتمد على كلمة السر
-         * في الـ HTML.
-         */
-
-        fetch(
-            "/api/admin/cars",
-            {
-                method: "GET",
-
-                headers: {
-                    "x-admin-password":
-                        password
-                }
-            }
-        )
-        .then(
-            async response => {
-
-                const data =
-                    await response.json();
-
-
-                if (!response.ok) {
-
-                    throw new Error(
-                        data.message ||
-                        "Wrong password."
-                    );
-
-                }
-
-
-                adminPassword =
-                    password;
-
-
-                sessionStorage.setItem(
-                    "zizoAdminPassword",
-                    password
+            const response =
+                await fetch(
+                    "/api/admin/cars",
+                    {
+                        method: "GET",
+                        headers: {
+                            "x-admin-password":
+                                password
+                        }
+                    }
                 );
 
-
-                document
-                    .getElementById(
-                        "loginSection"
-                    )
-                    .style.display =
-                    "none";
-
-
-                document
-                    .getElementById(
-                        "adminSection"
-                    )
-                    .style.display =
-                    "block";
-
-
-                document
-                    .getElementById(
-                        "loginError"
-                    )
-                    .style.display =
-                    "none";
-
-
-                /*
-                 * استخدم البيانات التي
-                 * رجعت من تسجيل الدخول
-                 */
-
-                renderCars(
-                    data.cars || []
+            const data =
+                await safeJson(
+                    response
                 );
 
+            if (!response.ok) {
 
-                loadRequests();
-
-            }
-        )
-        .catch(
-            error => {
-
-                showLoginError(
-                    error.message
+                throw new Error(
+                    "Login failed. Please check your password."
                 );
 
             }
-        );
+
+            adminPassword = password;
+
+            sessionStorage.setItem(
+                "zizoAdminPassword",
+                password
+            );
+
+            document
+                .getElementById(
+                    "loginSection"
+                )
+                .style.display = "none";
+
+            document
+                .getElementById(
+                    "adminSection"
+                )
+                .style.display = "block";
+
+            document
+                .getElementById(
+                    "loginError"
+                )
+                .style.display = "none";
+
+            allCars =
+                data.cars || [];
+
+            renderCars();
+
+            loadRequests();
+
+        }
+        catch (error) {
+
+            showLoginError(
+                "Unable to login. Please check your password and try again."
+            );
+
+        }
 
     }
 
-
-
-    /* =====================================================
-       LOGIN ERROR
-    ===================================================== */
 
     function showLoginError(message) {
 
@@ -886,10 +1297,9 @@
     }
 
 
-
-    /* =====================================================
+    /* =========================
        LOGOUT
-    ===================================================== */
+    ========================= */
 
     function logout() {
 
@@ -899,22 +1309,17 @@
             "zizoAdminPassword"
         );
 
-
         document
             .getElementById(
                 "adminSection"
             )
-            .style.display =
-            "none";
-
+            .style.display = "none";
 
         document
             .getElementById(
                 "loginSection"
             )
-            .style.display =
-            "flex";
-
+            .style.display = "flex";
 
         document
             .getElementById(
@@ -925,10 +1330,29 @@
     }
 
 
+    /* =========================
+       SAFE JSON
+    ========================= */
 
-    /* =====================================================
+    async function safeJson(response) {
+
+        try {
+
+            return await response.json();
+
+        }
+        catch {
+
+            return {};
+
+        }
+
+    }
+
+
+    /* =========================
        LOAD CARS
-    ===================================================== */
+    ========================= */
 
     async function loadCars() {
 
@@ -936,19 +1360,16 @@
             return;
         }
 
-
         const container =
             document.getElementById(
                 "carsContainer"
             );
-
 
         container.innerHTML = `
             <div class="loading">
                 Loading cars...
             </div>
         `;
-
 
         try {
 
@@ -963,34 +1384,30 @@
                     }
                 );
 
-
             const data =
-                await response.json();
-
+                await safeJson(
+                    response
+                );
 
             if (!response.ok) {
 
                 throw new Error(
-                    data.message ||
-                    "Could not load cars."
+                    "Unable to load cars."
                 );
 
             }
 
+            allCars =
+                data.cars || [];
 
-            renderCars(
-                data.cars || []
-            );
-
+            renderCars();
 
         }
-        catch (error) {
+        catch {
 
             container.innerHTML = `
                 <div class="empty">
-                    ${escapeHtml(
-                        error.message
-                    )}
+                    Unable to load cars right now.
                 </div>
             `;
 
@@ -999,40 +1416,166 @@
     }
 
 
+    /* =========================
+       FILTER
+    ========================= */
 
-    /* =====================================================
+    function setCarFilter(filter) {
+
+        currentCarFilter =
+            filter;
+
+        document
+            .querySelectorAll(
+                ".filter-btn"
+            )
+            .forEach(
+                button =>
+                    button.classList.remove(
+                        "active"
+                    )
+            );
+
+        if (
+            filter === "all"
+        ) {
+
+            document
+                .getElementById(
+                    "filterAll"
+                )
+                .classList.add(
+                    "active"
+                );
+
+        }
+
+        if (
+            filter === "available"
+        ) {
+
+            document
+                .getElementById(
+                    "filterAvailable"
+                )
+                .classList.add(
+                    "active"
+                );
+
+        }
+
+        if (
+            filter === "sold"
+        ) {
+
+            document
+                .getElementById(
+                    "filterSold"
+                )
+                .classList.add(
+                    "active"
+                );
+
+        }
+
+        renderCars();
+
+    }
+
+
+    function applyCarFilters() {
+
+        renderCars();
+
+    }
+
+
+    /* =========================
        RENDER CARS
-    ===================================================== */
+    ========================= */
 
-    function renderCars(cars) {
+    function renderCars() {
 
         const container =
             document.getElementById(
                 "carsContainer"
             );
 
+        const search =
+            document
+                .getElementById(
+                    "carSearch"
+                )
+                .value
+                .trim()
+                .toLowerCase();
+
+        const filtered =
+            allCars.filter(
+                car => {
+
+                    const status =
+                        String(
+                            car.status ||
+                            "available"
+                        ).toLowerCase();
+
+                    if (
+                        currentCarFilter !==
+                        "all" &&
+                        status !==
+                        currentCarFilter
+                    ) {
+
+                        return false;
+
+                    }
+
+                    if (!search) {
+                        return true;
+                    }
+
+                    const searchable = [
+
+                        car.brand,
+                        car.model,
+                        car.year,
+                        car.seller_name,
+                        car.seller_phone,
+                        car.car_location
+
+                    ]
+                    .join(" ")
+                    .toLowerCase();
+
+                    return searchable.includes(
+                        search
+                    );
+
+                }
+            );
+
 
         document.getElementById(
             "carsCount"
         ).textContent =
-            cars.length;
-
-
-        const available =
-            cars.filter(
-                car =>
-                    car.status ===
-                    "available"
-            ).length;
+            allCars.length;
 
 
         document.getElementById(
             "availableCount"
         ).textContent =
-            available;
+            allCars.filter(
+                car =>
+                    String(
+                        car.status ||
+                        "available"
+                    ).toLowerCase() ===
+                    "available"
+            ).length;
 
 
-        if (!cars.length) {
+        if (!filtered.length) {
 
             container.innerHTML = `
                 <div
@@ -1049,38 +1592,30 @@
 
 
         container.innerHTML =
-            cars
+            filtered
                 .map(
-                    car =>
-                        createCarCard(
-                            car
-                        )
+                    createCarCard
                 )
                 .join("");
 
     }
 
 
-
-    /* =====================================================
-       CREATE CAR CARD
-    ===================================================== */
+    /* =========================
+       CAR CARD
+    ========================= */
 
     function createCarCard(car) {
 
         const image =
-            car.main_image
-                ? car.main_image
-                : "";
+            car.main_image || "";
 
 
         const imageHTML =
             image
                 ? `
                     <img
-                        src="${escapeAttribute(
-                            image
-                        )}"
+                        src="${escapeAttribute(image)}"
                         class="car-image"
                         alt="Car"
                     >
@@ -1108,6 +1643,17 @@
                 : "Price not specified";
 
 
+        const status =
+            String(
+                car.status ||
+                "available"
+            ).toLowerCase();
+
+
+        const isSold =
+            status === "sold";
+
+
         return `
 
             <div class="car-card">
@@ -1119,16 +1665,16 @@
                     <div class="car-title">
 
                         ${escapeHtml(
-                            car.brand
+                            car.brand || ""
                         )}
 
                         ${escapeHtml(
-                            car.model
+                            car.model || ""
                         )}
 
                         ${escapeHtml(
                             String(
-                                car.year
+                                car.year || ""
                             )
                         )}
 
@@ -1158,58 +1704,62 @@
                         <div>
                             Transmission:
                             ${
-                                car.transmission
-                                    ? escapeHtml(
-                                        car.transmission
-                                    )
-                                    : "-"
+                                escapeHtml(
+                                    car.transmission ||
+                                    "-"
+                                )
                             }
                         </div>
 
                         <div>
                             Condition:
                             ${
-                                car.condition
-                                    ? escapeHtml(
-                                        car.condition
-                                    )
-                                    : "-"
+                                escapeHtml(
+                                    car.condition ||
+                                    "-"
+                                )
                             }
                         </div>
 
                         <div>
                             Traffic:
                             ${
-                                car.traffic_department
-                                    ? escapeHtml(
-                                        car.traffic_department
-                                    )
-                                    : "-"
+                                escapeHtml(
+                                    car.traffic_department ||
+                                    "-"
+                                )
                             }
                         </div>
 
                         <div>
                             License:
                             ${
-                                car.license_remaining
-                                    ? escapeHtml(
-                                        car.license_remaining
-                                    )
-                                    : "-"
-                            }
-                        </div>
-
-                        <div>
-                            Status:
-                            ${
                                 escapeHtml(
-                                    car.status ||
-                                    "available"
+                                    car.license_remaining ||
+                                    "-"
                                 )
                             }
                         </div>
 
                     </div>
+
+
+                    <span
+                        class="
+                            status-badge
+                            ${
+                                isSold
+                                    ? "status-sold"
+                                    : "status-available"
+                            }
+                        "
+                    >
+                        ${
+                            isSold
+                                ? "SOLD"
+                                : "AVAILABLE"
+                        }
+                    </span>
 
 
                     <div class="car-seller">
@@ -1254,12 +1804,55 @@
                     <div class="car-actions">
 
                         <button
-                            class="delete-btn"
-                            onclick="deleteCar(
-                                ${car.id}
+                            class="action-btn edit-btn"
+                            onclick="openEditModal(${car.id})"
+                        >
+                            Edit
+                        </button>
+
+                        <button
+                            class="
+                                action-btn
+                                ${
+                                    isSold
+                                        ? "available-btn"
+                                        : "sold-btn"
+                                }
+                            "
+                            onclick="toggleCarStatus(
+                                ${car.id},
+                                '${isSold ? "available" : "sold"}'
                             )"
                         >
-                            Delete Car
+                            ${
+                                isSold
+                                    ? "Mark Available"
+                                    : "Mark Sold"
+                            }
+                        </button>
+
+                        ${
+                            car.seller_phone
+                                ? `
+                                    <button
+                                        class="action-btn whatsapp-btn"
+                                        onclick="openWhatsApp(
+                                            '${escapeAttribute(
+                                                car.seller_phone
+                                            )}'
+                                        )"
+                                    >
+                                        WhatsApp
+                                    </button>
+                                `
+                                : ""
+                        }
+
+                        <button
+                            class="action-btn delete-btn"
+                            onclick="deleteCar(${car.id})"
+                        >
+                            Delete
                         </button>
 
                     </div>
@@ -1273,21 +1866,428 @@
     }
 
 
+    /* =========================
+       EDIT CAR
+    ========================= */
 
-    /* =====================================================
-       DELETE CAR
-    ===================================================== */
+    function openEditModal(id) {
 
-    async function deleteCar(id) {
+        const car =
+            allCars.find(
+                item =>
+                    Number(item.id) ===
+                    Number(id)
+            );
 
-        const confirmed =
-            confirm(
-                "Are you sure you want to delete this car?\n\nAll car images and related inspection requests will also be deleted."
+        if (!car) {
+
+            showToast(
+                "Car not found."
+            );
+
+            return;
+
+        }
+
+
+        document.getElementById(
+            "editId"
+        ).value =
+            car.id || "";
+
+
+        document.getElementById(
+            "editBrand"
+        ).value =
+            car.brand || "";
+
+
+        document.getElementById(
+            "editModel"
+        ).value =
+            car.model || "";
+
+
+        document.getElementById(
+            "editYear"
+        ).value =
+            car.year || "";
+
+
+        document.getElementById(
+            "editMileage"
+        ).value =
+            car.mileage || "";
+
+
+        document.getElementById(
+            "editPrice"
+        ).value =
+            car.price || "";
+
+
+        document.getElementById(
+            "editTransmission"
+        ).value =
+            car.transmission || "";
+
+
+        document.getElementById(
+            "editCondition"
+        ).value =
+            car.condition || "";
+
+
+        document.getElementById(
+            "editTraffic"
+        ).value =
+            car.traffic_department || "";
+
+
+        document.getElementById(
+            "editLicense"
+        ).value =
+            car.license_remaining || "";
+
+
+        document.getElementById(
+            "editStatus"
+        ).value =
+            car.status ||
+            "available";
+
+
+        document.getElementById(
+            "editSellerName"
+        ).value =
+            car.seller_name || "";
+
+
+        document.getElementById(
+            "editSellerPhone"
+        ).value =
+            car.seller_phone || "";
+
+
+        document.getElementById(
+            "editLocation"
+        ).value =
+            car.car_location || "";
+
+
+        document.getElementById(
+            "editDescription"
+        ).value =
+            car.description || "";
+
+
+        document.getElementById(
+            "editModal"
+        ).style.display =
+            "block";
+
+    }
+
+
+    function closeEditModal() {
+
+        document.getElementById(
+            "editModal"
+        ).style.display =
+            "none";
+
+    }
+
+
+    /* =========================
+       SAVE CAR
+    ========================= */
+
+    async function saveCar() {
+
+        const id =
+            document.getElementById(
+                "editId"
+            ).value;
+
+
+        const payload = {
+
+            brand:
+                document.getElementById(
+                    "editBrand"
+                ).value.trim(),
+
+            model:
+                document.getElementById(
+                    "editModel"
+                ).value.trim(),
+
+            year:
+                document.getElementById(
+                    "editYear"
+                ).value,
+
+            mileage:
+                document.getElementById(
+                    "editMileage"
+                ).value,
+
+            price:
+                document.getElementById(
+                    "editPrice"
+                ).value,
+
+            transmission:
+                document.getElementById(
+                    "editTransmission"
+                ).value,
+
+            condition:
+                document.getElementById(
+                    "editCondition"
+                ).value.trim(),
+
+            traffic_department:
+                document.getElementById(
+                    "editTraffic"
+                ).value.trim(),
+
+            license_remaining:
+                document.getElementById(
+                    "editLicense"
+                ).value.trim(),
+
+            status:
+                document.getElementById(
+                    "editStatus"
+                ).value,
+
+            seller_name:
+                document.getElementById(
+                    "editSellerName"
+                ).value.trim(),
+
+            seller_phone:
+                document.getElementById(
+                    "editSellerPhone"
+                ).value.trim(),
+
+            car_location:
+                document.getElementById(
+                    "editLocation"
+                ).value.trim(),
+
+            description:
+                document.getElementById(
+                    "editDescription"
+                ).value.trim()
+
+        };
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/admin/cars/" +
+                    id,
+                    {
+                        method: "PUT",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json",
+
+                            "x-admin-password":
+                                adminPassword
+                        },
+
+                        body:
+                            JSON.stringify(
+                                payload
+                            )
+                    }
+                );
+
+
+            const data =
+                await safeJson(
+                    response
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Unable to save the car."
+                );
+
+            }
+
+
+            showToast(
+                "Car updated successfully."
             );
 
 
-        if (!confirmed) {
+            closeEditModal();
+
+            await loadCars();
+
+        }
+        catch {
+
+            showToast(
+                "Could not update the car. Please try again."
+            );
+
+        }
+
+    }
+
+
+    /* =========================
+       STATUS
+    ========================= */
+
+    async function toggleCarStatus(
+        id,
+        newStatus
+    ) {
+
+        const car =
+            allCars.find(
+                item =>
+                    Number(item.id) ===
+                    Number(id)
+            );
+
+        if (!car) {
             return;
+        }
+
+
+        const message =
+            newStatus === "sold"
+                ? "Mark this car as SOLD?"
+                : "Mark this car as AVAILABLE again?";
+
+
+        if (!confirm(message)) {
+            return;
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/admin/cars/" +
+                    id,
+                    {
+                        method: "PUT",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json",
+
+                            "x-admin-password":
+                                adminPassword
+                        },
+
+                        body:
+                            JSON.stringify({
+
+                                brand:
+                                    car.brand,
+
+                                model:
+                                    car.model,
+
+                                year:
+                                    car.year,
+
+                                mileage:
+                                    car.mileage,
+
+                                price:
+                                    car.price,
+
+                                transmission:
+                                    car.transmission,
+
+                                condition:
+                                    car.condition,
+
+                                traffic_department:
+                                    car.traffic_department,
+
+                                license_remaining:
+                                    car.license_remaining,
+
+                                status:
+                                    newStatus,
+
+                                seller_name:
+                                    car.seller_name,
+
+                                seller_phone:
+                                    car.seller_phone,
+
+                                car_location:
+                                    car.car_location,
+
+                                description:
+                                    car.description
+
+                            })
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error();
+
+            }
+
+
+            showToast(
+                newStatus === "sold"
+                    ? "Car marked as sold."
+                    : "Car marked as available."
+            );
+
+
+            await loadCars();
+
+        }
+        catch {
+
+            showToast(
+                "Could not update the car status."
+            );
+
+        }
+
+    }
+
+
+    /* =========================
+       DELETE CAR
+    ========================= */
+
+    async function deleteCar(id) {
+
+        if (
+            !confirm(
+                "Are you sure you want to delete this car?\n\nAll car images and related inspection requests will also be deleted."
+            )
+        ) {
+
+            return;
+
         }
 
 
@@ -1308,22 +2308,14 @@
                 );
 
 
-            const data =
-                await response.json();
-
-
             if (!response.ok) {
 
-                throw new Error(
-                    data.message ||
-                    "Could not delete car."
-                );
+                throw new Error();
 
             }
 
 
             showToast(
-                data.message ||
                 "Car deleted successfully."
             );
 
@@ -1333,10 +2325,10 @@
             await loadRequests();
 
         }
-        catch (error) {
+        catch {
 
             showToast(
-                error.message
+                "Could not delete the car."
             );
 
         }
@@ -1344,10 +2336,9 @@
     }
 
 
-
-    /* =====================================================
-       LOAD REQUESTS
-    ===================================================== */
+    /* =========================
+       REQUESTS
+    ========================= */
 
     async function loadRequests() {
 
@@ -1365,7 +2356,7 @@
         tbody.innerHTML = `
             <tr>
                 <td
-                    colspan="8"
+                    colspan="9"
                     class="empty"
                 >
                     Loading requests...
@@ -1389,15 +2380,14 @@
 
 
             const data =
-                await response.json();
+                await safeJson(
+                    response
+                );
 
 
             if (!response.ok) {
 
-                throw new Error(
-                    data.message ||
-                    "Could not load requests."
-                );
+                throw new Error();
 
             }
 
@@ -1417,17 +2407,15 @@
             );
 
         }
-        catch (error) {
+        catch {
 
             tbody.innerHTML = `
                 <tr>
                     <td
-                        colspan="8"
+                        colspan="9"
                         class="empty"
                     >
-                        ${escapeHtml(
-                            error.message
-                        )}
+                        Unable to load inspection requests.
                     </td>
                 </tr>
             `;
@@ -1436,11 +2424,6 @@
 
     }
 
-
-
-    /* =====================================================
-       RENDER REQUESTS
-    ===================================================== */
 
     function renderRequests(requests) {
 
@@ -1455,7 +2438,7 @@
             tbody.innerHTML = `
                 <tr>
                     <td
-                        colspan="8"
+                        colspan="9"
                         class="empty"
                     >
                         No inspection requests.
@@ -1471,118 +2454,191 @@
         tbody.innerHTML =
             requests
                 .map(
-                    request =>
-                        `
+                    request => {
 
-                        <tr>
+                        const status =
+                            request.status ||
+                            "new";
 
-                            <td>
-                                #${request.id}
-                            </td>
 
-                            <td>
-                                ${escapeHtml(
-                                    request.buyer_name
-                                )}
-                            </td>
+                        let statusClass =
+                            "request-new";
 
-                            <td>
-                                ${escapeHtml(
-                                    request.buyer_phone
-                                )}
-                            </td>
 
-                            <td>
+                        if (
+                            status ===
+                            "contacted"
+                        ) {
 
-                                ${escapeHtml(
-                                    request.brand ||
-                                    ""
-                                )}
+                            statusClass =
+                                "request-contacted";
 
-                                ${escapeHtml(
-                                    request.model ||
-                                    ""
-                                )}
+                        }
 
-                                ${escapeHtml(
-                                    String(
-                                        request.year ||
+
+                        if (
+                            status ===
+                            "completed"
+                        ) {
+
+                            statusClass =
+                                "request-completed";
+
+                        }
+
+
+                        return `
+
+                            <tr>
+
+                                <td>
+                                    #${request.id}
+                                </td>
+
+                                <td>
+                                    ${escapeHtml(
+                                        request.buyer_name ||
+                                        "-"
+                                    )}
+                                </td>
+
+                                <td>
+                                    ${escapeHtml(
+                                        request.buyer_phone ||
+                                        "-"
+                                    )}
+                                </td>
+
+                                <td>
+
+                                    ${escapeHtml(
+                                        request.brand ||
                                         ""
-                                    )
-                                )}
+                                    )}
 
-                            </td>
+                                    ${escapeHtml(
+                                        request.model ||
+                                        ""
+                                    )}
 
-                            <td>
+                                    ${escapeHtml(
+                                        String(
+                                            request.year ||
+                                            ""
+                                        )
+                                    )}
 
-                                ${escapeHtml(
-                                    request.seller_name ||
-                                    "-"
-                                )}
+                                </td>
 
-                                <br>
+                                <td>
 
-                                ${escapeHtml(
-                                    request.seller_phone ||
-                                    "-"
-                                )}
+                                    ${escapeHtml(
+                                        request.seller_name ||
+                                        "-"
+                                    )}
 
-                            </td>
+                                    <br>
 
-                            <td>
+                                    ${escapeHtml(
+                                        request.seller_phone ||
+                                        "-"
+                                    )}
 
-                                ${escapeHtml(
-                                    request.car_location ||
-                                    "-"
-                                )}
+                                </td>
 
-                            </td>
+                                <td>
 
-                            <td>
+                                    ${escapeHtml(
+                                        request.car_location ||
+                                        "-"
+                                    )}
 
-                                ${formatDate(
-                                    request.created_at
-                                )}
+                                </td>
 
-                            </td>
+                                <td>
 
-                            <td>
+                                    <span
+                                        class="
+                                            request-status
+                                            ${statusClass}
+                                        "
+                                    >
+                                        ${escapeHtml(
+                                            status.toUpperCase()
+                                        )}
+                                    </span>
 
-                                <button
-                                    class="small-delete"
-                                    onclick="deleteRequest(
-                                        ${request.id}
-                                    )"
-                                >
-                                    Delete
-                                </button>
+                                </td>
 
-                            </td>
+                                <td>
 
-                        </tr>
+                                    ${formatDate(
+                                        request.created_at
+                                    )}
 
-                        `
+                                </td>
+
+                                <td>
+
+                                    ${
+                                        request.buyer_phone
+                                            ? `
+                                                <button
+                                                    class="small-delete"
+                                                    style="
+                                                        background:#176b3a;
+                                                        margin-bottom:5px;
+                                                    "
+                                                    onclick="openWhatsApp(
+                                                        '${escapeAttribute(
+                                                            request.buyer_phone
+                                                        )}'
+                                                    )"
+                                                >
+                                                    WhatsApp
+                                                </button>
+                                            `
+                                            : ""
+                                    }
+
+                                    <br>
+
+                                    <button
+                                        class="small-delete"
+                                        onclick="deleteRequest(
+                                            ${request.id}
+                                        )"
+                                    >
+                                        Delete
+                                    </button>
+
+                                </td>
+
+                            </tr>
+
+                        `;
+
+                    }
                 )
                 .join("");
 
     }
 
 
-
-    /* =====================================================
+    /* =========================
        DELETE REQUEST
-    ===================================================== */
+    ========================= */
 
     async function deleteRequest(id) {
 
-        const confirmed =
-            confirm(
+        if (
+            !confirm(
                 "Delete this inspection request?"
-            );
+            )
+        ) {
 
-
-        if (!confirmed) {
             return;
+
         }
 
 
@@ -1603,22 +2659,14 @@
                 );
 
 
-            const data =
-                await response.json();
-
-
             if (!response.ok) {
 
-                throw new Error(
-                    data.message ||
-                    "Could not delete request."
-                );
+                throw new Error();
 
             }
 
 
             showToast(
-                data.message ||
                 "Request deleted."
             );
 
@@ -1626,10 +2674,10 @@
             loadRequests();
 
         }
-        catch (error) {
+        catch {
 
             showToast(
-                error.message
+                "Could not delete the request."
             );
 
         }
@@ -1637,10 +2685,51 @@
     }
 
 
+    /* =========================
+       WHATSAPP
+    ========================= */
 
-    /* =====================================================
-       FORMAT NUMBER
-    ===================================================== */
+    function openWhatsApp(phone) {
+
+        let clean =
+            String(phone)
+                .replace(
+                    /\D/g,
+                    ""
+                );
+
+
+        if (
+            clean.startsWith("0")
+        ) {
+
+            clean =
+                "20" +
+                clean.substring(1);
+
+        }
+
+
+        const text =
+            encodeURIComponent(
+                "Hello, this is Zizo Automotive regarding your car."
+            );
+
+
+        window.open(
+            "https://wa.me/" +
+            clean +
+            "?text=" +
+            text,
+            "_blank"
+        );
+
+    }
+
+
+    /* =========================
+       FORMAT
+    ========================= */
 
     function formatNumber(number) {
 
@@ -1652,11 +2741,6 @@
 
     }
 
-
-
-    /* =====================================================
-       FORMAT DATE
-    ===================================================== */
 
     function formatDate(date) {
 
@@ -1677,9 +2761,7 @@
             )
         ) {
 
-            return escapeHtml(
-                String(date)
-            );
+            return String(date);
 
         }
 
@@ -1698,10 +2780,9 @@
     }
 
 
-
-    /* =====================================================
-       ESCAPE HTML
-    ===================================================== */
+    /* =========================
+       SECURITY HELPERS
+    ========================= */
 
     function escapeHtml(value) {
 
@@ -1740,11 +2821,6 @@
     }
 
 
-
-    /* =====================================================
-       ESCAPE ATTRIBUTE
-    ===================================================== */
-
     function escapeAttribute(value) {
 
         return escapeHtml(
@@ -1754,10 +2830,9 @@
     }
 
 
-
-    /* =====================================================
+    /* =========================
        TOAST
-    ===================================================== */
+    ========================= */
 
     function showToast(message) {
 
@@ -1788,10 +2863,9 @@
     }
 
 
-
-    /* =====================================================
-       ENTER KEY LOGIN
-    ===================================================== */
+    /* =========================
+       ENTER LOGIN
+    ========================= */
 
     document
         .getElementById(
@@ -1814,10 +2888,35 @@
         );
 
 
+    /* =========================
+       CLOSE MODAL
+       CLICK OUTSIDE
+    ========================= */
 
-    /* =====================================================
+    document
+        .getElementById(
+            "editModal"
+        )
+        .addEventListener(
+            "click",
+            function(event) {
+
+                if (
+                    event.target ===
+                    this
+                ) {
+
+                    closeEditModal();
+
+                }
+
+            }
+        );
+
+
+    /* =========================
        RESTORE SESSION
-    ===================================================== */
+    ========================= */
 
     window.addEventListener(
         "DOMContentLoaded",
@@ -1834,11 +2933,6 @@
             }
 
 
-            /*
-             * نتأكد أن كلمة السر
-             * ما زالت صحيحة
-             */
-
             try {
 
                 const response =
@@ -1854,7 +2948,9 @@
 
 
                 const data =
-                    await response.json();
+                    await safeJson(
+                        response
+                    );
 
 
                 if (!response.ok) {
@@ -1888,18 +2984,19 @@
                     "block";
 
 
-                renderCars(
-                    data.cars || []
-                );
+                allCars =
+                    data.cars || [];
 
+
+                renderCars();
 
                 loadRequests();
 
             }
-            catch (error) {
+            catch {
 
-                console.error(
-                    error
+                sessionStorage.removeItem(
+                    "zizoAdminPassword"
                 );
 
             }
@@ -1911,4 +3008,3 @@
 
 </body>
 </html>
-
