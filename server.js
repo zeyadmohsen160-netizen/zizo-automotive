@@ -944,6 +944,124 @@ app.get(
 );
 
 /* =========================================================
+   PUBLIC - ADD CAR
+========================================================= */
+
+app.post("/api/cars", upload.array("images", 20), (req, res) => {
+
+    const {
+        brand, model, year, mileage, price, transmission, condition,
+        traffic_department, license_remaining, description,
+        seller_name, seller_phone, car_location
+    } = req.body;
+
+    const cleanupFiles = () => {
+        if (req.files && req.files.length) {
+            req.files.forEach(file => {
+                try { fs.unlinkSync(file.path); }
+                catch (e) { console.error("Cleanup error:", e.message); }
+            });
+        }
+    };
+
+    if (!brand || !model || !year || !seller_name || !seller_phone || !car_location) {
+        cleanupFiles();
+        return res.status(400).json({
+            success: false,
+            message: "Please complete all required fields."
+        });
+    }
+
+    const numericYear = Number(year);
+
+    if (!Number.isInteger(numericYear)) {
+        cleanupFiles();
+        return res.status(400).json({
+            success: false,
+            message: "Invalid car information."
+        });
+    }
+
+    db.run(
+        `
+        INSERT INTO cars (
+            brand, model, year, mileage, price, transmission, condition,
+            traffic_department, license_remaining, description,
+            seller_name, seller_phone, car_location, status
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'available')
+        `,
+        [
+            String(brand).trim(),
+            String(model).trim(),
+            numericYear,
+            mileage ? Number(mileage) : null,
+            price ? Number(price) : null,
+            transmission ? String(transmission).trim() : null,
+            condition ? String(condition).trim() : null,
+            traffic_department ? String(traffic_department).trim() : null,
+            license_remaining ? String(license_remaining).trim() : null,
+            description ? String(description).trim() : null,
+            String(seller_name).trim(),
+            String(seller_phone).trim(),
+            String(car_location).trim()
+        ],
+        function (error) {
+
+            if (error) {
+                console.error("Public add car error:", error.message);
+                cleanupFiles();
+                return res.status(500).json({
+                    success: false,
+                    message: "Could not submit the car. Please try again."
+                });
+            }
+
+            const carId = this.lastID;
+
+            if (!req.files || req.files.length === 0) {
+                return res.status(201).json({
+                    success: true,
+                    message: "Car submitted successfully.",
+                    car_id: carId
+                });
+            }
+
+            const placeholders = req.files.map(() => "(?, ?)").join(",");
+            const values = [];
+
+            req.files.forEach(file => {
+                values.push(carId, "/images/" + file.filename);
+            });
+
+            db.run(
+                `
+                INSERT INTO car_images (car_id, image_path)
+                VALUES ${placeholders}
+                `,
+                values,
+                function (imageError) {
+
+                    if (imageError) {
+                        console.error("Public add car images error:", imageError.message);
+                        return res.status(500).json({
+                            success: false,
+                            message: "Could not submit the car. Please try again."
+                        });
+                    }
+
+                    return res.status(201).json({
+                        success: true,
+                        message: "Car submitted successfully.",
+                        car_id: carId
+                    });
+                }
+            );
+        }
+    );
+});
+
+/* =========================================================
    PUBLIC - INSPECTION REQUEST
 ========================================================= */
 
@@ -2899,7 +3017,7 @@ app.use(
             success: false,
 
             message:
-                "API endpoint not found."
+                "Something went wrong. Please try again."
 
         });
 
